@@ -1,0 +1,256 @@
+:root {
+  --site-main-width: 76rem;
+  --site-grid-min: 16rem;
+}
+
+.calculator-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-areas:
+    'batch batch toggles toggles'
+    'cookies calories-batch macros-batch used-cost'
+    'dough calories-serving macros-serving basket';
+  gap: clamp(1rem, 2vw, 1.35rem);
+  align-items: stretch;
+}
+
+.batch-readout {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-block-end: 0.75rem;
+}
+
+.batch-readout output,
+.stat-card output {
+  color: var(--accent-yellow);
+  font-size: clamp(1.5rem, 4vw, 2.2rem);
+  font-weight: 700;
+}
+
+.batch-card {
+  grid-area: batch;
+  align-self: stretch;
+}
+
+.batch-card small {
+  display: block;
+  margin-block-start: 0.65rem;
+}
+
+.toggle-list {
+  display: grid;
+  gap: 0.75rem;
+  grid-area: toggles;
+}
+
+.toggle-list label,
+.todo-list label {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.65rem;
+  align-items: start;
+  max-width: none;
+}
+
+.toggle-list input,
+.todo-list input {
+  inline-size: 1rem;
+  block-size: 1rem;
+  margin: 0.25em 0 0;
+  accent-color: var(--accent);
+}
+
+.stat-card {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.stat-cookies {
+  grid-area: cookies;
+}
+
+.stat-dough {
+  grid-area: dough;
+}
+
+.stat-calories-batch {
+  grid-area: calories-batch;
+}
+
+.stat-calories-serving {
+  grid-area: calories-serving;
+}
+
+.stat-macros-batch {
+  grid-area: macros-batch;
+}
+
+.stat-macros-serving {
+  grid-area: macros-serving;
+}
+
+.stat-macros-batch output,
+.stat-macros-serving output {
+  font-size: clamp(1.25rem, 2.6vw, 1.7rem);
+  line-height: 1.25;
+  white-space: pre-line;
+}
+
+.stat-used-cost {
+  grid-area: used-cost;
+}
+
+.stat-basket {
+  grid-area: basket;
+}
+
+.stat-card span {
+  color: var(--foreground2);
+  font-size: 0.9rem;
+}
+
+.stat-card small,
+.note-card small {
+  color: var(--foreground2);
+}
+
+.table-wrap {
+  overflow-x: auto;
+  border: 1px solid color-mix(in srgb, var(--foreground2) 28%, transparent);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 58rem;
+}
+
+th,
+td {
+  padding: 0.75rem 0.85rem;
+  border-block-end: 1px solid color-mix(in srgb, var(--foreground2) 24%, transparent);
+  text-align: left;
+  vertical-align: top;
+}
+
+th {
+  color: var(--accent-cyan);
+  font-size: 0.86rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+tbody tr:hover {
+  background: color-mix(in srgb, var(--accent-cyan) 7%, transparent);
+}
+
+ol li + li {
+  margin-block-start: 1rem;
+}
+
+.todo-list {
+  display: grid;
+  gap: 1rem;
+  padding: 0;
+  list-style: none;
+}
+
+.shopping-breakdown {
+  margin-block: 0;
+}
+
+@media (max-width: 640px) {
+  .terminal-panel,
+  .control-card,
+  .stat-card,
+  .note-card {
+    padding: 0.85rem;
+  }
+
+  .calculator-grid {
+    gap: 0.8rem;
+  }
+
+  .stat-card output {
+    font-size: clamp(1.35rem, 9vw, 1.9rem);
+    line-height: 1.15;
+  }
+
+  .table-wrap {
+    overflow: visible;
+    border: 0;
+  }
+
+  table,
+  thead,
+  tbody,
+  tr,
+  td {
+    display: block;
+    width: 100%;
+    min-width: 0;
+  }
+
+  thead {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
+
+  tbody {
+    display: grid;
+    gap: 0.85rem;
+  }
+
+  tr {
+    border: 1px solid color-mix(in srgb, var(--foreground2) 28%, transparent);
+    background: color-mix(in srgb, var(--background2) 46%, transparent);
+    padding: 0.75rem;
+  }
+
+  td {
+    display: grid;
+    grid-template-columns: minmax(7.5rem, 38%) minmax(0, 1fr);
+    gap: 0.75rem;
+    padding: 0.55rem 0;
+    border-block-end: 1px solid color-mix(in srgb, var(--foreground2) 18%, transparent);
+  }
+
+  td::before {
+    content: attr(data-label);
+    color: var(--accent-cyan);
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+  }
+
+  td:last-child {
+    border-block-end: 0;
+  }
+}
+
+@media (max-width: 760px) {
+  .calculator-grid,
+  .two-column {
+    grid-template-columns: 1fr;
+  }
+
+  .calculator-grid {
+    grid-template-areas:
+      'batch'
+      'toggles'
+      'cookies'
+      'dough'
+      'calories-batch'
+      'calories-serving'
+      'macros-batch'
+      'macros-serving'
+      'used-cost'
+      'basket';
+  }
+}

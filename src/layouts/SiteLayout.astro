@@ -1,7 +1,7 @@
 ---
-import SiteFooter from '../components/SiteFooter.astro';
-import SiteHeader from '../components/SiteHeader.astro';
-import '../styles/global.css';
+import ShellLayout from '@brainage04/astro-shell/components/SiteLayout.astro';
+import '../styles/app.css';
+import { baseHref, recipeHref, recipes } from '../data/recipes';
 
 export interface Props {
   title: string;
@@ -9,23 +9,21 @@ export interface Props {
 }
 
 const { title, description = 'Recipe batch scalers, Woolworths cost calculators, substitutions, and bake notes.' } = Astro.props;
-const pageTitle = title === 'Home' ? 'BakingCookingRecipes' : `${title} | BakingCookingRecipes`;
+const baseUrl = baseHref();
+const navItems = [
+  { name: 'BakingCookingRecipes', href: baseUrl, match: baseUrl, activeMode: 'exact' },
+  ...recipes.map((recipe) => ({ name: recipe.navTitle, href: recipeHref(recipe.slug), match: recipeHref(recipe.slug), activeMode: 'exact' as const })),
+  { name: 'Shopping list', href: `${baseUrl}ShoppingList/`, match: `${baseUrl}ShoppingList/`, activeMode: 'exact' as const },
+  { name: 'Main site', href: 'https://brainage04.github.io/', external: true },
+] as const;
 ---
 
-<!doctype html>
-<html lang="en" data-webtui-theme="dark">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content={description} />
-    <title>{pageTitle}</title>
-  </head>
-  <body>
-    <a class="skip-link" href="#main">Skip to content</a>
-    <SiteHeader />
-    <main id="main">
-      <slot />
-    </main>
-    <SiteFooter />
-  </body>
-</html>
+<ShellLayout
+  title={title}
+  siteName="BakingCookingRecipes"
+  navItems={navItems}
+  sourceHref="https://github.com/brainage04/BakingCookingRecipes"
+  description={description}
+>
+  <slot />
+</ShellLayout>
