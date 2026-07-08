@@ -1,4 +1,5 @@
 ---
+import PageHeader from '@brainage04/astro-shell/components/PageHeader.astro';
 import TerminalPanel from '@brainage04/astro-shell/components/TerminalPanel.astro';
 import SiteLayout from '../layouts/SiteLayout.astro';
 import { baseHref, recipeHref, recipes } from '../data/recipes';
@@ -7,6 +8,7 @@ const shoppingHref = `${baseHref()}ShoppingList/`;
 ---
 <SiteLayout title="Home" description="Recipe calculators for cookies and brownies with Woolworths cost estimates and bake notes.">
   <div class="site-stack">
+    <PageHeader title="BakingCookingRecipes" description="Recipe calculators for cookies and brownies with Woolworths cost estimates and bake notes." />
     <TerminalPanel title="Recipes">
       <div class="grid">
         {recipes.map((recipe) => (
