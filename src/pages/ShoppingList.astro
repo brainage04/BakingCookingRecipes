@@ -1,0 +1,237 @@
+---
+import TerminalPanel from '../components/TerminalPanel.astro';
+import SiteLayout from '../layouts/SiteLayout.astro';
+import { recipes } from '../data/recipes';
+
+const shoppingRecipes = recipes.map((recipe) => ({
+  slug: recipe.slug,
+  title: String(recipe.meta.title),
+  navTitle: recipe.navTitle,
+  ingredients: recipe.ingredients,
+  alternativeControls: recipe.alternativeControls,
+}));
+
+const alternativeControls = Array.from(
+  new Map(recipes.flatMap((recipe) => recipe.alternativeControls.map((control) => [control.key, control]))).values(),
+);
+---
+
+<SiteLayout title="Combined Shopping List" description="Choose cookie and brownie batch counts and generate one combined Woolworths ingredient list.">
+  <div class="site-stack">
+    <TerminalPanel title="Combined shopping list" class="stack" id="shopping-list">
+      <div class="calculator-grid" aria-live="polite">
+        {shoppingRecipes.map((recipe) => (
+          <div class="control-card">
+            <label class="field" for={`batch-${recipe.slug}`}>
+              <span>{recipe.title} batches</span>
+              <input id={`batch-${recipe.slug}`} data-recipe-batches={recipe.slug} type="number" min="0" step="any" inputmode="decimal" value="1" />
+            </label>
+          </div>
+        ))}
+
+        <div class="control-card toggle-list" aria-label="Ingredient alternatives">
+          {alternativeControls.map((control) => (
+            <label>
+              <input id={`combined-toggle-${control.key}`} data-alternative-key={control.key} type="checkbox" checked={control.defaultChecked} />
+              <span>{control.label}</span>
+            </label>
+          ))}
+        </div>
+
+        <div class="stat-card stat-used-cost">
+          <span>Used ingredient cost</span>
+          <output id="used-cost-output">—</output>
+          <small>Proportional cost across both recipes.</small>
+        </div>
+        <div class="stat-card stat-basket">
+          <span>Basket estimate</span>
+          <output id="basket-cost-output">—</output>
+          <small>Rounds combined quantities up to whole Woolworths packs.</small>
+        </div>
+      </div>
+
+      <div class="table-wrap" role="region" aria-label="Combined shopping list" tabindex="0">
+        <table>
+          <thead>
+            <tr>
+              <th>Woolworths item</th>
+              <th>Needed for recipes</th>
+              <th>Total needed</th>
+              <th>Packs to buy</th>
+              <th>Basket cost</th>
+            </tr>
+          </thead>
+          <tbody id="shopping-rows"></tbody>
+        </table>
+      </div>
+    </TerminalPanel>
+  </div>
+
+  <script is:inline type="application/json" id="shopping-data" set:html={JSON.stringify({ recipes: shoppingRecipes, alternativeControls })} />
+
+  <script is:inline>
+    const dataEl = document.getElementById('shopping-data');
+    const data = JSON.parse(dataEl?.textContent || '{}');
+    const state = { batches: {} };
+    for (const recipe of data.recipes || []) {
+      state.batches[recipe.slug] = 1;
+    }
+    for (const control of data.alternativeControls || []) {
+      state[control.key] = Boolean(control.defaultChecked);
+    }
+
+    const elements = {
+      batchInputs: document.querySelectorAll('[data-recipe-batches]'),
+      alternativeToggles: document.querySelectorAll('[data-alternative-key]'),
+      shoppingRows: document.getElementById('shopping-rows'),
+      usedCostOutput: document.getElementById('used-cost-output'),
+      basketCostOutput: document.getElementById('basket-cost-output'),
+    };
+
+    const currency = new Intl.NumberFormat('en-AU', { style: 'currency', currency: 'AUD' });
+    const number = new Intl.NumberFormat('en-AU', { maximumFractionDigits: 1 });
+    const tableLabels = ['Woolworths item', 'Needed for recipes', 'Total needed', 'Packs to buy', 'Basket cost'];
+
+    function productFor(ingredient, recipe) {
+      for (const control of recipe.alternativeControls || []) {
+        if (ingredient.products[control.productKey] && state[control.key]) return ingredient.products[control.productKey];
+      }
+      return ingredient.products.default;
+    }
+
+    function formatQuantity(value, unit) {
+      const formatted = Number.isInteger(value) ? String(value) : number.format(value);
+      return `${formatted}${unit === 'egg' ? ` ${value === 1 ? 'egg' : 'eggs'}` : unit}`;
+    }
+
+    function formatMoney(value) {
+      return currency.format(value);
+    }
+
+    function appendCell(row, content) {
+      const cell = document.createElement('td');
+      cell.dataset.label = tableLabels[row.children.length] || '';
+      if (typeof content === 'string') {
+        cell.textContent = content;
+      } else {
+        cell.append(content);
+      }
+      row.append(cell);
+      return cell;
+    }
+
+    function productKey(product) {
+      return `${product.id}:${product.name}:${product.packageUnit}`;
+    }
+
+    function renderProductCell(row, product) {
+      const wrapper = document.createElement('div');
+      const link = document.createElement('a');
+      link.href = product.url;
+      link.textContent = product.name;
+      link.target = '_blank';
+      link.rel = 'noreferrer';
+      const meta = document.createElement('div');
+      meta.className = 'muted';
+      meta.textContent = `${product.unitPriceLabel} · product ${product.id}`;
+      wrapper.append(link, meta);
+      appendCell(row, wrapper);
+    }
+
+    function renderBreakdownCell(row, breakdown) {
+      const list = document.createElement('ul');
+      list.className = 'shopping-breakdown';
+      for (const item of breakdown) {
+        const listItem = document.createElement('li');
+        listItem.textContent = `${item.recipeTitle}: ${item.ingredientLabel} · ${formatQuantity(item.quantity, item.unit)}`;
+        list.append(listItem);
+      }
+      appendCell(row, list);
+    }
+
+    function render() {
+      const combined = new Map();
+      let usedTotal = 0;
+      let basketTotal = 0;
+      elements.shoppingRows.textContent = '';
+
+      for (const recipe of data.recipes || []) {
+        const batches = state.batches[recipe.slug] || 0;
+        if (batches <= 0) continue;
+
+        for (const ingredient of recipe.ingredients) {
+          const product = productFor(ingredient, recipe);
+          const quantity = ingredient.costQuantity * batches;
+          const key = productKey(product);
+          const usedCost = (quantity * product.priceAud) / product.packageQuantity;
+          usedTotal += usedCost;
+
+          if (!combined.has(key)) {
+            combined.set(key, {
+              product,
+              quantity: 0,
+              unit: ingredient.costUnit,
+              breakdown: [],
+            });
+          }
+
+          const entry = combined.get(key);
+          entry.quantity += quantity;
+          entry.breakdown.push({
+            recipeTitle: recipe.title,
+            ingredientLabel: ingredient.label,
+            quantity,
+            unit: ingredient.costUnit,
+          });
+        }
+      }
+
+      const rows = Array.from(combined.values()).sort((left, right) => left.product.name.localeCompare(right.product.name));
+
+      for (const entry of rows) {
+        const row = document.createElement('tr');
+        const packageCount = Math.ceil(entry.quantity / entry.product.packageQuantity);
+        const cost = packageCount * entry.product.priceAud;
+        basketTotal += cost;
+
+        renderProductCell(row, entry.product);
+        renderBreakdownCell(row, entry.breakdown);
+        appendCell(row, formatQuantity(entry.quantity, entry.unit));
+        appendCell(row, `${packageCount} x ${entry.product.name}`);
+        appendCell(row, formatMoney(cost));
+        elements.shoppingRows.append(row);
+      }
+
+      if (rows.length === 0) {
+        const row = document.createElement('tr');
+        const cell = document.createElement('td');
+        cell.colSpan = tableLabels.length;
+        cell.textContent = 'Enter at least one batch to generate a shopping list.';
+        row.append(cell);
+        elements.shoppingRows.append(row);
+      }
+
+      elements.usedCostOutput.textContent = formatMoney(usedTotal);
+      elements.basketCostOutput.textContent = formatMoney(basketTotal);
+    }
+
+    for (const input of elements.batchInputs) {
+      input.addEventListener('input', (event) => {
+        const slug = event.currentTarget.getAttribute('data-recipe-batches');
+        const value = Number.parseFloat(event.currentTarget.value);
+        state.batches[slug] = Number.isFinite(value) && value >= 0 ? value : 0;
+        render();
+      });
+    }
+
+    for (const toggle of elements.alternativeToggles) {
+      toggle.addEventListener('change', (event) => {
+        const key = event.currentTarget.getAttribute('data-alternative-key');
+        state[key] = event.currentTarget.checked;
+        render();
+      });
+    }
+
+    render();
+  </script>
+</SiteLayout>

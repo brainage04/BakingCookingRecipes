@@ -8,7 +8,7 @@ export interface Props {
   description?: string;
 }
 
-const { title, description = 'Chocolate chip cookie batch scaler, Woolworths cost calculator, substitutions, and bake notes.' } = Astro.props;
+const { title, description = 'Recipe batch scalers, Woolworths cost calculators, substitutions, and bake notes.' } = Astro.props;
 const pageTitle = title === 'Home' ? 'BakingCookingRecipes' : `${title} | BakingCookingRecipes`;
 ---
 

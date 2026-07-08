@@ -1,89 +1,47 @@
+import type { IngredientChoice } from './recipe';
+
 export const recipeMeta = {
-  title: "Chewy Chocolate Chip Cookies",
-  sourceName: "Sally's Baking Addiction",
-  sourceUrl: 'https://sallysbakingaddiction.com/chewy-chocolate-chip-cookies/',
-  sourceYield: '16 XL cookies or 20 medium/large cookies',
-  prepTime: '15 minutes',
-  cookTime: '16 minutes',
-  totalTime: '2 hours 51 minutes, including 20 minutes cooling/resting',
-  chillTime: 'At least 2 hours, up to 3 days; Sally recommends overnight.',
-  cookiesPerBatch: 20,
-  doughBallGrams: 50,
-  sourceDoughBallNote:
-    'Recipe card says 2 heaping Tablespoons, about 1.75 oz / 50g, but this calculator treats one batch as 20 cookies regardless of dough weight.',
+  title: "World's Best Brownies",
+  sourceName: 'Gordon Ramsay Restaurants',
+  sourceUrl: 'https://www.gordonramsayrestaurants.com/recipes/worlds-best-brownies/',
+  sourceYield: '15–20 brownies',
+  prepTime: '20 minutes',
+  cookTime: '35–40 minutes',
+  totalTime: 'About 1 hour, plus cooling',
+  servingsPerBatch: 20,
+  panSize: '30 x 23cm cake tin',
   localStore: 'Selected Woolworths store',
   priceDate: '2026-07-01',
 } as const;
 
 export const sourceIngredients = [
-  '2 and 1/4 cups (281g) all-purpose flour (spooned & leveled)',
-  '1 teaspoon baking soda',
-  '1 and 1/2 teaspoons cornstarch',
-  '1/2 teaspoon salt',
-  '3/4 cup (170g / 12 Tbsp) unsalted butter, melted & cooled for 5 minutes',
-  '3/4 cup (150g) packed light or dark brown sugar',
-  '1/2 cup (100g) granulated sugar',
-  '1 large egg + 1 egg yolk, at room temperature',
-  '2 teaspoons pure vanilla extract',
-  '200g semi-sweet chocolate chips or chocolate chunks',
+  '245g dark chocolate, broken into squares or roughly chopped',
+  '200g butter, diced, plus extra for greasing',
+  '175g caster sugar',
+  '125g light soft brown sugar',
+  '4 large eggs, lightly beaten',
+  '2 tsp vanilla extract',
+  '115g plain flour',
+  'Pinch of sea salt',
+  '100g dark chocolate, chopped into small chunks (optional)',
 ] as const;
 
 export const sourceInstructions = [
-  'In a large bowl, whisk the flour, baking soda, cornstarch, and salt together. Set aside.',
-  'In a medium bowl, whisk the melted butter, brown sugar, and granulated sugar together until no lumps remain. Whisk in the egg and egg yolk until combined, then whisk in the vanilla extract. The mixture will be thin. Pour into dry ingredients and mix together with a large spoon or spatula. The dough will be very soft, thick, and shiny. Fold in the chocolate chips. The chocolate chips may not stick to the dough because of the melted butter, but do your best to combine them.',
-  'Cover the dough tightly and refrigerate for 12–24 hours.',
-  'Preheat oven to 150°C fan-forced. Line large baking sheets with parchment paper or silicone baking mats. Leave the chilled dough out at room temperature for 2–4 hours before preparing.',
-  'Roll the dough into 50g balls, then shape each ball taller rather than wide, almost like a cylinder. Arrange cookies 3 inches apart.',
-  'Bake at 150°C fan-forced for 16 minutes; this worked well in the latest test. If using two trays, swap their oven positions halfway through baking.',
-  'After removing the cookies from the oven, slide each sheet of baking paper off the hot trays and onto the kitchen counter. Lightly cover the cookies with kitchen towels and let them cool/rest for 20 minutes before eating or storing; optional: press extra chocolate chips into the tops while warm.',
-  'Store tightly covered at room temperature for up to 1 week. Fridge storage is also fine.',
+  'Preheat the oven to 180°C/160°C fan/Gas 4. Grease and line a 30 x 23cm cake tin with baking parchment.',
+  'Put the chocolate and butter into a large heatproof bowl set over a pan of gently simmering water, without letting the bottom of the bowl touch the water, and leave until melted, stirring occasionally.',
+  'Remove from the heat and cool the chocolate down by whisking in the sugars using a balloon whisk.',
+  'Add the eggs and vanilla extract and mix in with a wooden spoon until combined.',
+  'Sift over the flour and salt and stir again until smooth and combined. Pour into the prepared tin, smoothing the top level.',
+  'Bake for 35–40 minutes, until cracked around the edges and soft in the middle, rotating the tin halfway through baking.',
+  'If adding the chocolate chunks, take the brownie out of the oven after 20 minutes and vigorously throw the chunks of chocolate at the half-baked brownie so they break the surface. Return to the oven for the remaining cooking time.',
+  'Transfer the brownie to a wire rack and leave it to cool in the tin, then cut into squares before serving.',
+  'Once cooled, keep the brownies in an airtight container for up to a week, or freeze tightly wrapped for up to a month.',
 ] as const;
-
 
 export const experimentTodos = [
   'Try Vetta Smart Protein Plain Flour 1kg instead of regular plain flour.',
-  'Retest 150°C fan-forced for 16 minutes with the baking paper moved to the kitchen counter and cookies lightly covered with kitchen towels for a 20-minute cool/rest.',
+  'Try reducing the optional chocolate chunks to compare texture and sweetness.',
 ] as const;
-
-export type Unit = 'g' | 'ml' | 'egg';
-
-export interface MacroBreakdown {
-  protein: number;
-  carbohydrates: number;
-  fat: number;
-}
-
-export interface ProductChoice {
-  id: string;
-  name: string;
-  packageQuantity: number;
-  packageUnit: Unit;
-  priceAud: number;
-  unitPriceLabel: string;
-  url: string;
-  source: string;
-  kcalPer100g: number | null;
-  macrosPer100g: MacroBreakdown | null;
-  nutritionNote?: string;
-}
-
-export interface IngredientChoice {
-  key: string;
-  label: string;
-  sourceAmount: string;
-  metricQuantity: number;
-  metricUnit: Unit;
-  costQuantity: number;
-  costUnit: Unit;
-  nutritionQuantity: number;
-  nutritionUnit: 'g' | 'ml';
-  products: {
-    default: ProductChoice;
-    stevia?: ProductChoice;
-    brownMonkfruit?: ProductChoice;
-    proteinFlour?: ProductChoice;
-  };
-}
 
 const woolworthsSearchSource =
   'Woolworths online search result observed for the selected shopping target; final in-store pricing can differ until the store is selected in Woolworths.';
@@ -93,13 +51,13 @@ const woolworthsProductSource =
 export const ingredients: IngredientChoice[] = [
   {
     key: 'flour',
-    label: 'All-purpose / plain flour',
-    sourceAmount: '2 1/4 cups (281g)',
-    metricQuantity: 281,
+    label: 'Plain flour',
+    sourceAmount: '115g',
+    metricQuantity: 115,
     metricUnit: 'g',
-    costQuantity: 281,
+    costQuantity: 115,
     costUnit: 'g',
-    nutritionQuantity: 281,
+    nutritionQuantity: 115,
     nutritionUnit: 'g',
     products: {
       default: {
@@ -129,63 +87,12 @@ export const ingredients: IngredientChoice[] = [
     },
   },
   {
-    key: 'baking-soda',
-    label: 'Baking soda / bicarbonate soda',
-    sourceAmount: '1 tsp',
-    metricQuantity: 4.6,
-    metricUnit: 'g',
-    costQuantity: 4.6,
-    costUnit: 'g',
-    nutritionQuantity: 0,
-    nutritionUnit: 'g',
-    products: {
-      default: {
-        id: '251189',
-        name: 'Essentials Bicarbonate Soda 500g',
-        packageQuantity: 500,
-        packageUnit: 'g',
-        priceAud: 2.45,
-        unitPriceLabel: '$0.49 / 100g',
-        url: 'https://www.woolworths.com.au/shop/productdetails/251189/essentials-bicarbonate-soda',
-        source: woolworthsProductSource,
-        kcalPer100g: 0,
-        macrosPer100g: { protein: 0, carbohydrates: 0, fat: 0 },
-        nutritionNote: 'Leavening agent; calories treated as zero.',
-      },
-    },
-  },
-  {
-    key: 'cornstarch',
-    label: 'Cornstarch / cornflour',
-    sourceAmount: '1 1/2 tsp',
-    metricQuantity: 4,
-    metricUnit: 'g',
-    costQuantity: 4,
-    costUnit: 'g',
-    nutritionQuantity: 4,
-    nutritionUnit: 'g',
-    products: {
-      default: {
-        id: '39128',
-        name: 'Essentials Cornflour 500g',
-        packageQuantity: 500,
-        packageUnit: 'g',
-        priceAud: 2.25,
-        unitPriceLabel: '$4.50 / 1kg',
-        url: 'https://www.woolworths.com.au/shop/productdetails/39128/essentials-cornflour',
-        source: woolworthsProductSource,
-        kcalPer100g: 1550 / 4.184,
-        macrosPer100g: { protein: 0.3, carbohydrates: 91.3, fat: 0.1 },
-      },
-    },
-  },
-  {
     key: 'salt',
-    label: 'Salt',
-    sourceAmount: '1/2 tsp',
-    metricQuantity: 3,
+    label: 'Sea salt',
+    sourceAmount: 'Pinch',
+    metricQuantity: 1,
     metricUnit: 'g',
-    costQuantity: 3,
+    costQuantity: 1,
     costUnit: 'g',
     nutritionQuantity: 0,
     nutritionUnit: 'g',
@@ -207,13 +114,13 @@ export const ingredients: IngredientChoice[] = [
   },
   {
     key: 'butter',
-    label: 'Unsalted butter',
-    sourceAmount: '3/4 cup (170g / 12 Tbsp)',
-    metricQuantity: 170,
+    label: 'Butter',
+    sourceAmount: '200g, plus extra for greasing',
+    metricQuantity: 200,
     metricUnit: 'g',
-    costQuantity: 170,
+    costQuantity: 200,
     costUnit: 'g',
-    nutritionQuantity: 170,
+    nutritionQuantity: 200,
     nutritionUnit: 'g',
     products: {
       default: {
@@ -233,13 +140,13 @@ export const ingredients: IngredientChoice[] = [
   },
   {
     key: 'brown-sugar',
-    label: 'Packed brown sugar',
-    sourceAmount: '3/4 cup (150g)',
-    metricQuantity: 150,
+    label: 'Light soft brown sugar',
+    sourceAmount: '125g',
+    metricQuantity: 125,
     metricUnit: 'g',
-    costQuantity: 150,
+    costQuantity: 125,
     costUnit: 'g',
-    nutritionQuantity: 150,
+    nutritionQuantity: 125,
     nutritionUnit: 'g',
     products: {
       default: {
@@ -269,14 +176,14 @@ export const ingredients: IngredientChoice[] = [
     },
   },
   {
-    key: 'white-sugar',
-    label: 'Granulated white sugar',
-    sourceAmount: '1/2 cup (100g)',
-    metricQuantity: 100,
+    key: 'caster-sugar',
+    label: 'Caster sugar',
+    sourceAmount: '175g',
+    metricQuantity: 175,
     metricUnit: 'g',
-    costQuantity: 100,
+    costQuantity: 175,
     costUnit: 'g',
-    nutritionQuantity: 100,
+    nutritionQuantity: 175,
     nutritionUnit: 'g',
     products: {
       default: {
@@ -307,13 +214,13 @@ export const ingredients: IngredientChoice[] = [
   },
   {
     key: 'eggs',
-    label: 'Egg + egg yolk',
-    sourceAmount: '1 large egg + 1 egg yolk',
-    metricQuantity: 1.5,
+    label: 'Large eggs',
+    sourceAmount: '4 large eggs, lightly beaten',
+    metricQuantity: 4,
     metricUnit: 'egg',
-    costQuantity: 1.5,
+    costQuantity: 4,
     costUnit: 'egg',
-    nutritionQuantity: 68,
+    nutritionQuantity: 200,
     nutritionUnit: 'g',
     products: {
       default: {
@@ -327,13 +234,13 @@ export const ingredients: IngredientChoice[] = [
         source: woolworthsProductSource,
         kcalPer100g: 596 / 4.184,
         macrosPer100g: { protein: 12.7, carbohydrates: 0.7, fat: 9.9 },
-        nutritionNote: 'Calories use about 68g edible egg for one large egg plus one yolk.',
+        nutritionNote: 'Nutrition uses about 50g edible egg per large egg.',
       },
     },
   },
   {
     key: 'vanilla',
-    label: 'Pure vanilla extract',
+    label: 'Vanilla extract',
     sourceAmount: '2 tsp',
     metricQuantity: 10,
     metricUnit: 'ml',
@@ -358,14 +265,14 @@ export const ingredients: IngredientChoice[] = [
     },
   },
   {
-    key: 'chocolate',
-    label: 'Semi-sweet chocolate chips/chunks',
-    sourceAmount: '200g',
-    metricQuantity: 200,
+    key: 'melted-chocolate',
+    label: 'Dark chocolate for melting',
+    sourceAmount: '245g',
+    metricQuantity: 245,
     metricUnit: 'g',
-    costQuantity: 200,
+    costQuantity: 245,
     costUnit: 'g',
-    nutritionQuantity: 200,
+    nutritionQuantity: 245,
     nutritionUnit: 'g',
     products: {
       default: {
@@ -379,6 +286,32 @@ export const ingredients: IngredientChoice[] = [
         source: woolworthsProductSource,
         kcalPer100g: 2110 / 4.184,
         macrosPer100g: { protein: 5.3, carbohydrates: 56.4, fat: 28.4 },
+      },
+    },
+  },
+  {
+    key: 'optional-chocolate-chunks',
+    label: 'Optional dark chocolate chunks',
+    sourceAmount: '100g optional',
+    metricQuantity: 100,
+    metricUnit: 'g',
+    costQuantity: 100,
+    costUnit: 'g',
+    nutritionQuantity: 100,
+    nutritionUnit: 'g',
+    products: {
+      default: {
+        id: '6036943',
+        name: 'Woolworths Dark Chocolate Chips 200g',
+        packageQuantity: 200,
+        packageUnit: 'g',
+        priceAud: 4.5,
+        unitPriceLabel: '$2.25 / 100g',
+        url: 'https://www.woolworths.com.au/shop/productdetails/6036943/woolworths-dark-chocolate-chips',
+        source: woolworthsProductSource,
+        kcalPer100g: 2110 / 4.184,
+        macrosPer100g: { protein: 5.3, carbohydrates: 56.4, fat: 28.4 },
+        nutritionNote: 'Optional ingredient is included in the calculator totals while enabled in the source recipe.',
       },
     },
   },

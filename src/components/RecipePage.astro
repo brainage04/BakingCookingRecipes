@@ -1,0 +1,338 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+import TerminalPanel from './TerminalPanel.astro';
+import type { RecipePageData } from '../data/recipes';
+
+export interface Props {
+  recipe: RecipePageData;
+}
+
+const { recipe } = Astro.props;
+const calculatorData = {
+  recipeMeta: recipe.meta,
+  ingredients: recipe.ingredients,
+  alternativeControls: recipe.alternativeControls,
+  servingsPerBatch: recipe.servingsPerBatch,
+  servingSingular: recipe.servingSingular,
+  servingPlural: recipe.servingPlural,
+};
+
+const servingPluralTitle = `${recipe.servingPlural.charAt(0).toUpperCase()}${recipe.servingPlural.slice(1)}`;
+
+const estimatedMassGrams = recipe.ingredients.reduce((total, ingredient) => {
+  if (ingredient.key === 'eggs') return total + ingredient.nutritionQuantity;
+  if (ingredient.metricUnit === 'ml') return total + ingredient.metricQuantity;
+  if (ingredient.metricUnit === 'g') return total + ingredient.metricQuantity;
+  return total;
+}, 0);
+---
+
+<SiteLayout title={recipe.pageTitle} description={recipe.description}>
+  <div class="site-stack">
+    <TerminalPanel title="Calculator" class="stack" id="calculator">
+      <div class="calculator-grid" aria-live="polite">
+        <div class="control-card batch-card">
+          <label class="field" for="batch-input">
+            <span>Batches</span>
+            <input id="batch-input" type="number" min="0" step="any" inputmode="decimal" value="1" aria-describedby="batch-help" />
+          </label>
+          <small id="batch-help" class="muted">Enter any unsigned decimal batch count.</small>
+        </div>
+
+        <div class="control-card toggle-list" aria-label="Ingredient alternatives">
+          {recipe.alternativeControls.map((control) => (
+            <label>
+              <input id={`toggle-${control.key}`} data-alternative-key={control.key} type="checkbox" checked={control.defaultChecked} />
+              <span>{control.label}</span>
+            </label>
+          ))}
+        </div>
+        <div class="stat-card stat-cookies">
+          <span>{servingPluralTitle}</span>
+          <output id="servings-output">—</output>
+          <small>{recipe.servingsPerBatch} {recipe.servingPlural} per batch.</small>
+        </div>
+        <div class="stat-card stat-dough">
+          <span>{recipe.massLabel}</span>
+          <output id="mass-output">{estimatedMassGrams.toFixed(0)}g</output>
+          <small>{recipe.massDescription}</small>
+        </div>
+        <div class="stat-card stat-calories-batch">
+          <span>Calories / batch</span>
+          <output id="calories-batch-output">—</output>
+          <small>{recipe.unavailableNutritionNote}</small>
+        </div>
+        <div class="stat-card stat-calories-serving">
+          <span>Calories / {recipe.servingSingular}</span>
+          <output id="calories-serving-output">—</output>
+          <small>Calories per batch ÷ {recipe.servingsPerBatch} {recipe.servingPlural}.</small>
+        </div>
+        <div class="stat-card stat-macros-batch">
+          <span>Macros / batch</span>
+          <output id="macros-batch-output">—</output>
+          <small>Protein / carbs / fat. {recipe.unavailableNutritionNote}</small>
+        </div>
+        <div class="stat-card stat-macros-serving">
+          <span>Macros / {recipe.servingSingular}</span>
+          <output id="macros-serving-output">—</output>
+          <small>Per {recipe.servingSingular}, using {recipe.servingsPerBatch} {recipe.servingPlural} per batch.</small>
+        </div>
+        <div class="stat-card stat-used-cost">
+          <span>Used ingredient cost</span>
+          <output id="used-cost-output">—</output>
+          <small>Proportional cost for the selected batch count.</small>
+        </div>
+        <div class="stat-card stat-basket">
+          <span>Basket estimate</span>
+          <output id="basket-cost-output">—</output>
+          <small>Rounds up to whole Woolworths packs.</small>
+        </div>
+      </div>
+
+      <div class="table-wrap" role="region" aria-label="Scaled ingredient costs" tabindex="0">
+        <table>
+          <thead>
+            <tr>
+              <th>Ingredient</th>
+              <th>Source amount</th>
+              <th>Scaled amount</th>
+              <th>Woolworths item</th>
+              <th>Used cost</th>
+              <th>Packs / basket cost</th>
+            </tr>
+          </thead>
+          <tbody id="ingredient-rows"></tbody>
+        </table>
+      </div>
+    </TerminalPanel>
+
+    <TerminalPanel title="Ingredients" id="recipe">
+      <ul>
+        {recipe.sourceIngredients.map((ingredient) => <li>{ingredient}</li>)}
+      </ul>
+    </TerminalPanel>
+
+    <TerminalPanel title="Instructions">
+      <ol>
+        {recipe.sourceInstructions.map((step) => <li>{step}</li>)}
+      </ol>
+    </TerminalPanel>
+
+    <TerminalPanel title="Todo list" id="todo">
+      <div class="todo-list" role="list">
+        {recipe.experimentTodos.map((todo, index) => (
+          <label role="listitem">
+            <input type="checkbox" data-todo-index={index} />
+            <span>{todo}</span>
+          </label>
+        ))}
+      </div>
+    </TerminalPanel>
+  </div>
+
+  <script is:inline type="application/json" id="calculator-data" set:html={JSON.stringify(calculatorData)} />
+  <script is:inline type="application/json" id="todo-storage-key" set:html={JSON.stringify(recipe.storageKey)} />
+
+  <script is:inline>
+    const dataEl = document.getElementById('calculator-data');
+    const storageKeyEl = document.getElementById('todo-storage-key');
+    const data = JSON.parse(dataEl?.textContent || '{}');
+    const state = { batches: 1 };
+    for (const control of data.alternativeControls || []) {
+      state[control.key] = Boolean(control.defaultChecked);
+    }
+
+    const elements = {
+      batchInput: document.getElementById('batch-input'),
+      servingsOutput: document.getElementById('servings-output'),
+      massOutput: document.getElementById('mass-output'),
+      caloriesBatchOutput: document.getElementById('calories-batch-output'),
+      caloriesServingOutput: document.getElementById('calories-serving-output'),
+      macrosBatchOutput: document.getElementById('macros-batch-output'),
+      macrosServingOutput: document.getElementById('macros-serving-output'),
+      usedCostOutput: document.getElementById('used-cost-output'),
+      basketCostOutput: document.getElementById('basket-cost-output'),
+      ingredientRows: document.getElementById('ingredient-rows'),
+      alternativeToggles: document.querySelectorAll('[data-alternative-key]'),
+    };
+
+    const currency = new Intl.NumberFormat('en-AU', { style: 'currency', currency: 'AUD' });
+    const number = new Intl.NumberFormat('en-AU', { maximumFractionDigits: 1 });
+
+    function productFor(ingredient) {
+      for (const control of data.alternativeControls || []) {
+        if (ingredient.products[control.productKey] && state[control.key]) return ingredient.products[control.productKey];
+      }
+      return ingredient.products.default;
+    }
+
+    function formatQuantity(value, unit) {
+      const formatted = Number.isInteger(value) ? String(value) : number.format(value);
+      return `${formatted}${unit === 'egg' ? ` ${value === 1 ? 'egg' : 'eggs'}` : unit}`;
+    }
+
+    function formatMoney(value) {
+      return currency.format(value);
+    }
+
+    function usedCost(ingredient, product, batches = state.batches) {
+      return (ingredient.costQuantity * batches * product.priceAud) / product.packageQuantity;
+    }
+
+    function basketFor(ingredient, product, batches = state.batches) {
+      const packageCount = Math.ceil((ingredient.costQuantity * batches) / product.packageQuantity);
+      return {
+        packageCount,
+        cost: packageCount * product.priceAud,
+      };
+    }
+
+    function caloriesForBatch(ingredient, product) {
+      if (product.kcalPer100g === null) return 0;
+      return (ingredient.nutritionQuantity * product.kcalPer100g) / 100;
+    }
+
+    function macrosForBatch(ingredient, product) {
+      if (product.macrosPer100g === null) return { protein: 0, carbohydrates: 0, fat: 0 };
+      const multiplier = ingredient.nutritionQuantity / 100;
+      return {
+        protein: product.macrosPer100g.protein * multiplier,
+        carbohydrates: product.macrosPer100g.carbohydrates * multiplier,
+        fat: product.macrosPer100g.fat * multiplier,
+      };
+    }
+
+    function addMacros(left, right) {
+      return {
+        protein: left.protein + right.protein,
+        carbohydrates: left.carbohydrates + right.carbohydrates,
+        fat: left.fat + right.fat,
+      };
+    }
+
+    function scaleMacros(macros, multiplier) {
+      return {
+        protein: macros.protein * multiplier,
+        carbohydrates: macros.carbohydrates * multiplier,
+        fat: macros.fat * multiplier,
+      };
+    }
+
+    function formatMacros(macros) {
+      return `Protein ${number.format(macros.protein)}g\nCarbs ${number.format(macros.carbohydrates)}g\nFat ${number.format(macros.fat)}g`;
+    }
+
+    const tableLabels = ['Ingredient', 'Source amount', 'Scaled amount', 'Woolworths item', 'Used cost', 'Packs / basket cost'];
+
+    function renderCell(row, text, className) {
+      const cell = document.createElement('td');
+      cell.dataset.label = tableLabels[row.children.length] || '';
+      if (className) cell.className = className;
+      cell.textContent = text;
+      row.append(cell);
+      return cell;
+    }
+
+    function renderLinkCell(row, product) {
+      const cell = document.createElement('td');
+      cell.dataset.label = tableLabels[row.children.length] || '';
+      const link = document.createElement('a');
+      link.href = product.url;
+      link.textContent = product.name;
+      link.target = '_blank';
+      link.rel = 'noreferrer';
+      const meta = document.createElement('div');
+      meta.className = 'muted';
+      meta.textContent = `${product.unitPriceLabel} · product ${product.id}`;
+      cell.append(link, meta);
+      if (product.nutritionNote) {
+        const note = document.createElement('small');
+        note.className = 'muted';
+        note.textContent = product.nutritionNote;
+        cell.append(document.createElement('br'), note);
+      }
+      row.append(cell);
+    }
+
+    function render() {
+      const batches = state.batches;
+      let caloriesPerBatch = 0;
+      let macrosPerBatch = { protein: 0, carbohydrates: 0, fat: 0 };
+      let usedTotal = 0;
+      let basketTotal = 0;
+      let massGramsPerBatch = 0;
+      elements.ingredientRows.textContent = '';
+
+      for (const ingredient of data.ingredients) {
+        const product = productFor(ingredient);
+        const row = document.createElement('tr');
+        const scaledMetric = ingredient.metricQuantity * batches;
+        const scaledCost = usedCost(ingredient, product, batches);
+        const basket = basketFor(ingredient, product, batches);
+        const batchCalories = caloriesForBatch(ingredient, product);
+        const batchMacros = macrosForBatch(ingredient, product);
+
+        usedTotal += scaledCost;
+        basketTotal += basket.cost;
+        caloriesPerBatch += batchCalories;
+        macrosPerBatch = addMacros(macrosPerBatch, batchMacros);
+
+        if (ingredient.key === 'eggs') {
+          massGramsPerBatch += ingredient.nutritionQuantity;
+        } else if (ingredient.metricUnit === 'g' || ingredient.metricUnit === 'ml') {
+          massGramsPerBatch += ingredient.metricQuantity;
+        }
+
+        renderCell(row, ingredient.label);
+        renderCell(row, ingredient.sourceAmount);
+        renderCell(row, formatQuantity(scaledMetric, ingredient.metricUnit));
+        renderLinkCell(row, product);
+        renderCell(row, formatMoney(scaledCost));
+        renderCell(row, `${basket.packageCount} x ${product.name} · ${formatMoney(basket.cost)}`);
+        elements.ingredientRows.append(row);
+      }
+
+      const massTotal = massGramsPerBatch * batches;
+      const servingsPerBatch = data.servingsPerBatch;
+      const servings = servingsPerBatch * batches;
+      const caloriesPerServing = caloriesPerBatch / servingsPerBatch;
+      const macrosPerServing = scaleMacros(macrosPerBatch, 1 / servingsPerBatch);
+
+      elements.servingsOutput.textContent = number.format(servings);
+      elements.massOutput.textContent = `${number.format(massTotal)}g`;
+      elements.caloriesBatchOutput.textContent = `${number.format(caloriesPerBatch)} kcal`;
+      elements.caloriesServingOutput.textContent = `${number.format(caloriesPerServing)} kcal`;
+      elements.macrosBatchOutput.textContent = formatMacros(macrosPerBatch);
+      elements.macrosServingOutput.textContent = formatMacros(macrosPerServing);
+      elements.usedCostOutput.textContent = formatMoney(usedTotal);
+      elements.basketCostOutput.textContent = formatMoney(basketTotal);
+    }
+
+    elements.batchInput?.addEventListener('input', (event) => {
+      const value = Number.parseFloat(event.currentTarget.value);
+      state.batches = Number.isFinite(value) && value >= 0 ? value : 0;
+      render();
+    });
+
+    for (const toggle of elements.alternativeToggles) {
+      toggle.addEventListener('change', (event) => {
+        const key = event.currentTarget.getAttribute('data-alternative-key');
+        state[key] = event.currentTarget.checked;
+        render();
+      });
+    }
+
+    const todoStorageKey = JSON.parse(storageKeyEl?.textContent || '"recipe-calculator-todos"');
+    const storedTodos = JSON.parse(localStorage.getItem(todoStorageKey) || '{}');
+    for (const checkbox of document.querySelectorAll('[data-todo-index]')) {
+      const index = checkbox.getAttribute('data-todo-index');
+      checkbox.checked = Boolean(storedTodos[index]);
+      checkbox.addEventListener('change', () => {
+        storedTodos[index] = checkbox.checked;
+        localStorage.setItem(todoStorageKey, JSON.stringify(storedTodos));
+      });
+    }
+
+    render();
+  </script>
+</SiteLayout>

@@ -1,0 +1,15 @@
+---
+import RecipePage from '../components/RecipePage.astro';
+import { recipes } from '../data/recipes';
+
+export function getStaticPaths() {
+  return recipes.map((recipe) => ({
+    params: { slug: recipe.slug },
+    props: { recipe },
+  }));
+}
+
+const { recipe } = Astro.props;
+---
+
+<RecipePage recipe={recipe} />

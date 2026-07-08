@@ -44,7 +44,7 @@ body {
   grid-template-rows: auto 1fr auto;
   line-height: 1.55;
   color: var(--foreground0);
-  background: radial-gradient(circle at top right, color-mix(in srgb, var(--accent-cyan) 12%, transparent), transparent 28rem), var(--background0);
+  background: var(--background0);
 }
 
 body::before {
