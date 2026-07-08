@@ -12,13 +12,9 @@ const shoppingHref = `${baseHref()}ShoppingList/`;
     <TerminalPanel title="Recipes">
       <div class="grid">
         {recipes.map((recipe) => (
-          <article class="note-card">
-            <h2><a href={recipeHref(recipe.slug)}>{recipe.meta.title}</a></h2>
-            <p class="muted">{recipe.description}</p>
-            <p>
-              <a href={recipeHref(recipe.slug)}>Open {recipe.navTitle.toLowerCase()} calculator</a>
-            </p>
-          </article>
+          <a class="recipe-card note-card" href={recipeHref(recipe.slug)}>
+            <h2>{recipe.cardTitle}</h2>
+          </a>
         ))}
       </div>
     </TerminalPanel>

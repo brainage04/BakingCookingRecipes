@@ -12,6 +12,7 @@ export interface AlternativeControl {
 export interface RecipePageData {
   slug: string;
   navTitle: string;
+  cardTitle: string;
   pageTitle: string;
   description: string;
   meta: Record<string, unknown>;
@@ -54,6 +55,7 @@ export const recipes = [
   {
     slug: 'ChocolateChipCookies',
     navTitle: 'Cookies',
+    cardTitle: 'Chocolate Chip Cookies',
     pageTitle: 'Chocolate Chip Cookie Calculator',
     description: 'Chocolate chip cookie batch scaler, Woolworths cost calculator, substitutions, and bake notes.',
     meta: cookieData.recipeMeta,
@@ -73,6 +75,7 @@ export const recipes = [
   {
     slug: 'WorldsBestBrownies',
     navTitle: 'Brownies',
+    cardTitle: 'Brownies',
     pageTitle: 'World’s Best Brownies Calculator',
     description: 'Gordon Ramsay Restaurants brownie recipe scaler with Woolworths cost calculator, substitutions, and bake notes.',
     meta: brownieData.recipeMeta,

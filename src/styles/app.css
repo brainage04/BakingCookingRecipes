@@ -3,6 +3,30 @@
   --site-grid-min: 16rem;
 }
 
+main .page-header > h1 {
+  max-width: none;
+  white-space: nowrap !important;
+  word-break: normal;
+  overflow-wrap: normal;
+}
+
+.recipe-card {
+  display: block;
+  color: var(--foreground0);
+  text-decoration: none;
+}
+
+.recipe-card:hover {
+  color: var(--foreground0);
+  border-color: color-mix(in srgb, var(--accent-cyan) 68%, transparent);
+  background: color-mix(in srgb, var(--accent-cyan) 8%, var(--background2) 68%);
+}
+
+.recipe-card h2 {
+  margin: 0;
+  font-size: clamp(1.05rem, 2.2vw, 1.3rem);
+}
+
 .calculator-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
