@@ -11,7 +11,7 @@ export interface Props {
 const { title, description = 'Recipe batch scalers, Woolworths cost calculators, substitutions, and bake notes.' } = Astro.props;
 const baseUrl = baseHref();
 const navItems = [
-  { name: 'BakingCookingRecipes', href: baseUrl, match: baseUrl, activeMode: 'exact' },
+  { name: 'Home', href: baseUrl, match: baseUrl, activeMode: 'exact' },
   ...recipes.map((recipe) => ({ name: recipe.navTitle, href: recipeHref(recipe.slug), match: recipeHref(recipe.slug), activeMode: 'exact' as const })),
   { name: 'Shopping list', href: `${baseUrl}ShoppingList/`, match: `${baseUrl}ShoppingList/`, activeMode: 'exact' as const },
   { name: 'Main site', href: 'https://brainage04.github.io/', external: true },
@@ -21,6 +21,7 @@ const navItems = [
 <ShellLayout
   title={title}
   siteName="BakingCookingRecipes"
+  homeTitle="BakingCookingRecipes"
   navItems={navItems}
   sourceHref="https://github.com/brainage04/BakingCookingRecipes"
   description={description}

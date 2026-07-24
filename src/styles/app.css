@@ -1,30 +1,168 @@
-:root {
-  --site-main-width: 76rem;
+html:root {
+  --font-mono: "Courier New", Courier, monospace;
+  --font-body: var(--font-mono);
+  --font-family: var(--font-mono);
+  --background0: #171218;
+  --background1: #201820;
+  --background2: #2b202d;
+  --background3: #433247;
+  --foreground0: #fff8fc;
+  --foreground1: #ead8e7;
+  --foreground2: #bca5bf;
+  --surface: #1d171e;
+  --surface-raised: #251c27;
+  --border-subtle: rgb(217 180 237 / 20%);
+  --border-strong: rgb(239 179 195 / 52%);
+  --shadow-soft: 0 1rem 2.5rem rgb(23 18 24 / 48%);
+  --accent-cyan: #d9b4ed;
+  --accent: #efb3c3;
+  --accent-green: #efb3c3;
+  --accent-yellow: #f8d8e5;
+  --panel-bg: color-mix(in srgb, var(--surface) 94%, transparent);
+  --panel-border: var(--border-subtle);
+  --panel-shadow: var(--shadow-soft);
+  --site-main-width: 70rem;
+  --site-nav-width: 70rem;
   --site-grid-min: 16rem;
 }
 
+html body {
+  font-family: var(--font-mono);
+  background:
+    radial-gradient(circle at 12% 8%, rgb(217 180 237 / 8%), transparent 28rem),
+    radial-gradient(circle at 88% 20%, rgb(239 179 195 / 7%), transparent 30rem),
+    var(--background0);
+}
+
+:where(h1, h2, h3, h4, nav, button, p, li, a, input, textarea, select, .eyebrow, .site-badge, .panel-header, .site-footer) {
+  font-family: var(--font-mono);
+}
+
+:where(p, li) {
+  line-height: 1.6;
+}
+
+.terminal-panel {
+  --box-border-color: var(--border-subtle);
+  border-color: var(--border-subtle);
+  box-shadow: var(--shadow-soft);
+}
+
+.panel-header {
+  border-block-end-color: var(--border-subtle);
+}
+
+.action-button {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  border: 1px solid color-mix(in srgb, var(--accent-cyan) 68%, var(--foreground2));
+  background: var(--accent-cyan);
+  color: var(--background0);
+  padding: 0.65rem 0.9rem;
+  font: 700 0.9rem/1 var(--font-mono);
+  text-decoration: none;
+  transition: translate 160ms ease, border-color 160ms ease, background-color 160ms ease, color 160ms ease;
+}
+
+.action-button:hover {
+  translate: 0 -0.1rem;
+  border-color: var(--foreground0);
+  background: var(--foreground0);
+  color: var(--background0);
+}
+
 main .page-header > h1 {
-  max-width: none;
-  white-space: nowrap !important;
+  max-width: 18ch;
+  white-space: normal !important;
   word-break: normal;
   overflow-wrap: normal;
 }
 
+.recipes-home {
+  display: grid;
+  gap: clamp(3.5rem, 9vw, 7rem);
+}
+
+.recipes-hero {
+  display: grid;
+  gap: 1rem;
+  padding-block: clamp(1rem, 5vw, 3rem);
+}
+
+.recipes-hero h1 {
+  max-width: 13ch;
+  margin: 0;
+  font-size: clamp(3rem, 10vw, 6.8rem);
+  line-height: 0.86;
+  letter-spacing: -0.075em;
+  word-break: normal;
+  overflow-wrap: normal;
+}
+
+.recipes-hero > p:last-child {
+  max-width: 62ch;
+  margin: 0;
+  color: var(--foreground1);
+  font-size: clamp(1rem, 2vw, 1.15rem);
+}
+
+.home-section {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.home-section h2 {
+  margin: 0;
+  font-size: clamp(1.9rem, 5vw, 3rem);
+  line-height: 1;
+  letter-spacing: -0.045em;
+}
+
+.recipe-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
 .recipe-card {
-  display: block;
+  display: grid;
+  gap: 0.65rem;
+  min-width: 0;
+  padding: clamp(1rem, 2vw, 1.3rem);
+  border-block-start: 1px solid var(--border-strong);
+  background: var(--surface-raised);
   color: var(--foreground0);
   text-decoration: none;
+  box-shadow: var(--shadow-soft);
+  transition: translate 160ms ease, border-color 160ms ease;
 }
 
-.recipe-card:hover {
+.recipe-card:hover,
+.recipe-card:focus-visible {
+  translate: 0 -0.15rem;
   color: var(--foreground0);
-  border-color: color-mix(in srgb, var(--accent-cyan) 68%, transparent);
-  background: color-mix(in srgb, var(--accent-cyan) 8%, var(--background2) 68%);
+  border-color: var(--accent-cyan);
 }
 
-.recipe-card h2 {
+.recipe-card h3 {
   margin: 0;
-  font-size: clamp(1.05rem, 2.2vw, 1.3rem);
+  font-size: clamp(1.2rem, 2.2vw, 1.55rem);
+}
+
+.shopping-cta {
+  display: grid;
+  justify-items: start;
+  gap: 0.9rem;
+  padding-block-start: 1.25rem;
+  border-block-start: 1px solid var(--border-subtle);
+}
+
+.shopping-cta p {
+  margin: 0;
+  color: var(--foreground1);
 }
 
 .calculator-grid {
@@ -183,6 +321,19 @@ ol li + li {
 
 .shopping-breakdown {
   margin-block: 0;
+}
+
+@media (max-width: 640px) {
+  .recipe-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .action-button,
+  .recipe-card {
+    transition: none;
+  }
 }
 
 @media (max-width: 640px) {

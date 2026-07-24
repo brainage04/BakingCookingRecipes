@@ -1,26 +1,35 @@
 ---
-import PageHeader from '@brainage04/astro-shell/components/PageHeader.astro';
-import TerminalPanel from '@brainage04/astro-shell/components/TerminalPanel.astro';
 import SiteLayout from '../layouts/SiteLayout.astro';
 import { baseHref, recipeHref, recipes } from '../data/recipes';
 
 const shoppingHref = `${baseHref()}ShoppingList/`;
 ---
 <SiteLayout title="Home" description="Recipe calculators for cookies and brownies with Woolworths cost estimates and bake notes.">
-  <div class="site-stack">
-    <PageHeader title="BakingCookingRecipes" description="Recipe calculators for cookies and brownies with Woolworths cost estimates and bake notes." />
-    <TerminalPanel title="Recipes">
-      <div class="grid">
+  <div class="recipes-home">
+    <header class="recipes-hero">
+      <p class="eyebrow">Recipe calculators</p>
+      <h1>Baking<wbr />Cooking<wbr />Recipes</h1>
+      <p>Recipe calculators for cookies and brownies with Woolworths cost estimates and bake notes.</p>
+    </header>
+
+    <section class="home-section" aria-labelledby="recipes-title">
+      <p class="eyebrow">Recipes</p>
+      <h2 id="recipes-title">Choose a recipe</h2>
+      <div class="recipe-grid">
         {recipes.map((recipe) => (
-          <a class="recipe-card note-card" href={recipeHref(recipe.slug)}>
-            <h2>{recipe.cardTitle}</h2>
+          <a class="recipe-card" href={recipeHref(recipe.slug)}>
+            <h3>{recipe.cardTitle}</h3>
+            <span>Open calculator <span aria-hidden="true">→</span></span>
           </a>
         ))}
       </div>
-    </TerminalPanel>
-    <TerminalPanel title="Shopping">
+    </section>
+
+    <section class="shopping-cta" aria-labelledby="shopping-title">
+      <p class="eyebrow">Shopping</p>
+      <h2 id="shopping-title">Combined shopping list</h2>
       <p>Choose how many batches of cookies and brownies you want to make, then combine them into one grocery list.</p>
-      <p><a href={shoppingHref}>Open combined shopping list</a></p>
-    </TerminalPanel>
+      <a class="action-button" href={shoppingHref}>Open combined shopping list <span aria-hidden="true">→</span></a>
+    </section>
   </div>
 </SiteLayout>
