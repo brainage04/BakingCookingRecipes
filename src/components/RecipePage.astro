@@ -30,7 +30,7 @@ const estimatedMassGrams = recipe.ingredients.reduce((total, ingredient) => {
 
 <SiteLayout title={recipe.pageTitle} description={recipe.description}>
   <div class="site-stack">
-    <PageHeader title={String(recipe.meta.title)} description={recipe.description} />
+    <PageHeader title={String(recipe.meta.title)} />
     <TerminalPanel title="Calculator" class="stack" id="calculator">
       <div class="calculator-grid" aria-live="polite">
         <div class="control-card batch-card">
@@ -120,24 +120,12 @@ const estimatedMassGrams = recipe.ingredients.reduce((total, ingredient) => {
       </ol>
     </TerminalPanel>
 
-    <TerminalPanel title="Todo list" id="todo">
-      <div class="todo-list" role="list">
-        {recipe.experimentTodos.map((todo, index) => (
-          <label role="listitem">
-            <input type="checkbox" data-todo-index={index} />
-            <span>{todo}</span>
-          </label>
-        ))}
-      </div>
-    </TerminalPanel>
   </div>
 
   <script is:inline type="application/json" id="calculator-data" set:html={JSON.stringify(calculatorData)} />
-  <script is:inline type="application/json" id="todo-storage-key" set:html={JSON.stringify(recipe.storageKey)} />
 
   <script is:inline>
     const dataEl = document.getElementById('calculator-data');
-    const storageKeyEl = document.getElementById('todo-storage-key');
     const data = JSON.parse(dataEl?.textContent || '{}');
     const state = { batches: 1 };
     for (const control of data.alternativeControls || []) {
@@ -324,16 +312,6 @@ const estimatedMassGrams = recipe.ingredients.reduce((total, ingredient) => {
       });
     }
 
-    const todoStorageKey = JSON.parse(storageKeyEl?.textContent || '"recipe-calculator-todos"');
-    const storedTodos = JSON.parse(localStorage.getItem(todoStorageKey) || '{}');
-    for (const checkbox of document.querySelectorAll('[data-todo-index]')) {
-      const index = checkbox.getAttribute('data-todo-index');
-      checkbox.checked = Boolean(storedTodos[index]);
-      checkbox.addEventListener('change', () => {
-        storedTodos[index] = checkbox.checked;
-        localStorage.setItem(todoStorageKey, JSON.stringify(storedTodos));
-      });
-    }
 
     render();
   </script>

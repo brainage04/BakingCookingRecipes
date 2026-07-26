@@ -38,10 +38,6 @@ export const sourceInstructions = [
   'Once cooled, keep the brownies in an airtight container for up to a week, or freeze tightly wrapped for up to a month.',
 ] as const;
 
-export const experimentTodos = [
-  'Try Vetta Smart Protein Plain Flour 1kg instead of regular plain flour.',
-  'Try reducing the optional chocolate chunks to compare texture and sweetness.',
-] as const;
 
 const woolworthsSearchSource =
   'Woolworths online search result observed for the selected shopping target; final in-store pricing can differ until the store is selected in Woolworths.';

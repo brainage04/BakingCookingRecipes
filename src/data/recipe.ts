@@ -40,10 +40,6 @@ export const sourceInstructions = [
 ] as const;
 
 
-export const experimentTodos = [
-  'Try Vetta Smart Protein Plain Flour 1kg instead of regular plain flour.',
-  'Retest 150°C fan-forced for 16 minutes with the baking paper moved to the kitchen counter and cookies lightly covered with kitchen towels for a 20-minute cool/rest.',
-] as const;
 
 export type Unit = 'g' | 'ml' | 'egg';
 

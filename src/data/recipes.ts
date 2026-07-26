@@ -18,7 +18,6 @@ export interface RecipePageData {
   meta: Record<string, unknown>;
   sourceIngredients: readonly string[];
   sourceInstructions: readonly string[];
-  experimentTodos: readonly string[];
   ingredients: readonly IngredientChoice[];
   servingsPerBatch: number;
   servingSingular: string;
@@ -26,7 +25,6 @@ export interface RecipePageData {
   massLabel: string;
   massDescription: string;
   unavailableNutritionNote: string;
-  storageKey: string;
   alternativeControls: readonly AlternativeControl[];
 }
 
@@ -61,7 +59,6 @@ export const recipes = [
     meta: cookieData.recipeMeta,
     sourceIngredients: cookieData.sourceIngredients,
     sourceInstructions: cookieData.sourceInstructions,
-    experimentTodos: cookieData.experimentTodos,
     ingredients: cookieData.ingredients,
     servingsPerBatch: cookieData.recipeMeta.cookiesPerBatch,
     servingSingular: 'cookie',
@@ -69,7 +66,6 @@ export const recipes = [
     massLabel: 'Estimated dough',
     massDescription: `Dough estimate only; cookie count is fixed at ${cookieData.recipeMeta.cookiesPerBatch} per batch.`,
     unavailableNutritionNote: 'Vanilla excluded: Woolworths nutrition is unavailable.',
-    storageKey: 'cookie-calculator-todos',
     alternativeControls: standardAlternativeControls,
   },
   {
@@ -81,7 +77,6 @@ export const recipes = [
     meta: brownieData.recipeMeta,
     sourceIngredients: brownieData.sourceIngredients,
     sourceInstructions: brownieData.sourceInstructions,
-    experimentTodos: brownieData.experimentTodos,
     ingredients: brownieData.ingredients,
     servingsPerBatch: brownieData.recipeMeta.servingsPerBatch,
     servingSingular: 'brownie',
@@ -89,7 +84,6 @@ export const recipes = [
     massLabel: 'Estimated batter',
     massDescription: `Batter estimate only; brownie count is fixed at ${brownieData.recipeMeta.servingsPerBatch} per batch.`,
     unavailableNutritionNote: 'Vanilla excluded: Woolworths nutrition is unavailable. Optional chocolate chunks are included.',
-    storageKey: 'brownie-calculator-todos',
     alternativeControls: standardAlternativeControls,
   },
 ] as const satisfies readonly RecipePageData[];

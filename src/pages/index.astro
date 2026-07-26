@@ -7,13 +7,10 @@ const shoppingHref = `${baseHref()}ShoppingList/`;
 <SiteLayout title="Home" description="Recipe calculators for cookies and brownies with Woolworths cost estimates and bake notes.">
   <div class="recipes-home">
     <header class="recipes-hero">
-      <p class="eyebrow">Recipe calculators</p>
       <h1>Baking<wbr />Cooking<wbr />Recipes</h1>
-      <p>Recipe calculators for cookies and brownies with Woolworths cost estimates and bake notes.</p>
     </header>
 
     <section class="home-section" aria-labelledby="recipes-title">
-      <p class="eyebrow">Recipes</p>
       <h2 id="recipes-title">Choose a recipe</h2>
       <div class="recipe-grid">
         {recipes.map((recipe) => (
@@ -26,9 +23,7 @@ const shoppingHref = `${baseHref()}ShoppingList/`;
     </section>
 
     <section class="shopping-cta" aria-labelledby="shopping-title">
-      <p class="eyebrow">Shopping</p>
       <h2 id="shopping-title">Combined shopping list</h2>
-      <p>Choose how many batches of cookies and brownies you want to make, then combine them into one grocery list.</p>
       <a class="action-button" href={shoppingHref}>Open combined shopping list <span aria-hidden="true">→</span></a>
     </section>
   </div>

@@ -28,13 +28,10 @@ html:root {
 
 html body {
   font-family: var(--font-mono);
-  background:
-    radial-gradient(circle at 12% 8%, rgb(217 180 237 / 8%), transparent 28rem),
-    radial-gradient(circle at 88% 20%, rgb(239 179 195 / 7%), transparent 30rem),
-    var(--background0);
+  background: var(--background0);
 }
 
-:where(h1, h2, h3, h4, nav, button, p, li, a, input, textarea, select, .eyebrow, .site-badge, .panel-header, .site-footer) {
+:where(h1, h2, h3, h4, nav, button, p, li, a, input, textarea, select, .site-badge, .panel-header, .site-footer) {
   font-family: var(--font-mono);
 }
 
@@ -102,12 +99,6 @@ main .page-header > h1 {
   overflow-wrap: normal;
 }
 
-.recipes-hero > p:last-child {
-  max-width: 62ch;
-  margin: 0;
-  color: var(--foreground1);
-  font-size: clamp(1rem, 2vw, 1.15rem);
-}
 
 .home-section {
   display: grid;
@@ -160,10 +151,6 @@ main .page-header > h1 {
   border-block-start: 1px solid var(--border-subtle);
 }
 
-.shopping-cta p {
-  margin: 0;
-  color: var(--foreground1);
-}
 
 .calculator-grid {
   display: grid;
@@ -207,8 +194,7 @@ main .page-header > h1 {
   grid-area: toggles;
 }
 
-.toggle-list label,
-.todo-list label {
+.toggle-list label {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
   gap: 0.65rem;
@@ -216,8 +202,7 @@ main .page-header > h1 {
   max-width: none;
 }
 
-.toggle-list input,
-.todo-list input {
+.toggle-list input {
   inline-size: 1rem;
   block-size: 1rem;
   margin: 0.25em 0 0;
@@ -312,12 +297,6 @@ ol li + li {
   margin-block-start: 1rem;
 }
 
-.todo-list {
-  display: grid;
-  gap: 1rem;
-  padding: 0;
-  list-style: none;
-}
 
 .shopping-breakdown {
   margin-block: 0;
