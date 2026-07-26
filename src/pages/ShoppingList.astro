@@ -1,5 +1,4 @@
 ---
-import PageHeader from '@brainage04/astro-shell/components/PageHeader.astro';
 import TerminalPanel from '@brainage04/astro-shell/components/TerminalPanel.astro';
 import SiteLayout from '../layouts/SiteLayout.astro';
 import { recipes } from '../data/recipes';
@@ -19,8 +18,7 @@ const alternativeControls = Array.from(
 
 <SiteLayout title="Combined Shopping List" description="Choose cookie and brownie batch counts and generate one combined Woolworths ingredient list.">
   <div class="site-stack">
-    <PageHeader title="Combined shopping list" />
-    <TerminalPanel title="Combined shopping list" class="stack" id="shopping-list">
+    <TerminalPanel class="stack" id="shopping-list">
       <div class="calculator-grid" aria-live="polite">
         {shoppingRecipes.map((recipe) => (
           <div class="control-card">

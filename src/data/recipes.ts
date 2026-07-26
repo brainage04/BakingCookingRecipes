@@ -51,10 +51,10 @@ const standardAlternativeControls = [
 
 export const recipes = [
   {
-    slug: 'ChocolateChipCookies',
+    slug: 'Cookies',
     navTitle: 'Cookies',
     cardTitle: 'Chocolate Chip Cookies',
-    pageTitle: 'Chocolate Chip Cookie Calculator',
+    pageTitle: 'Cookies',
     description: 'Chocolate chip cookie batch scaler, Woolworths cost calculator, substitutions, and bake notes.',
     meta: cookieData.recipeMeta,
     sourceIngredients: cookieData.sourceIngredients,
@@ -69,10 +69,10 @@ export const recipes = [
     alternativeControls: standardAlternativeControls,
   },
   {
-    slug: 'WorldsBestBrownies',
+    slug: 'Brownies',
     navTitle: 'Brownies',
     cardTitle: 'Brownies',
-    pageTitle: 'World’s Best Brownies Calculator',
+    pageTitle: 'Brownies',
     description: 'Gordon Ramsay Restaurants brownie recipe scaler with Woolworths cost calculator, substitutions, and bake notes.',
     meta: brownieData.recipeMeta,
     sourceIngredients: brownieData.sourceIngredients,

@@ -6,12 +6,10 @@ const shoppingHref = `${baseHref()}ShoppingList/`;
 ---
 <SiteLayout title="Home" description="Recipe calculators for cookies and brownies with Woolworths cost estimates and bake notes.">
   <div class="recipes-home">
-    <header class="recipes-hero">
-      <h1>Baking<wbr />Cooking<wbr />Recipes</h1>
-    </header>
+    <h1 class="visually-hidden">BakingCookingRecipes</h1>
 
     <section class="home-section" aria-labelledby="recipes-title">
-      <h2 id="recipes-title">Choose a recipe</h2>
+      <h2 id="recipes-title">Recipes</h2>
       <div class="recipe-grid">
         {recipes.map((recipe) => (
           <a class="recipe-card" href={recipeHref(recipe.slug)}>
@@ -22,9 +20,14 @@ const shoppingHref = `${baseHref()}ShoppingList/`;
       </div>
     </section>
 
-    <section class="shopping-cta" aria-labelledby="shopping-title">
+    <section class="home-section" aria-labelledby="shopping-title">
       <h2 id="shopping-title">Combined shopping list</h2>
-      <a class="action-button" href={shoppingHref}>Open combined shopping list <span aria-hidden="true">→</span></a>
+      <div class="recipe-grid">
+        <a class="recipe-card shopping-card" href={shoppingHref}>
+          <h3>Open combined shopping list</h3>
+          <span>Combine recipe ingredients <span aria-hidden="true">→</span></span>
+        </a>
+      </div>
     </section>
   </div>
 </SiteLayout>

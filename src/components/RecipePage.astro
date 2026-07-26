@@ -1,6 +1,5 @@
 ---
 import SiteLayout from '../layouts/SiteLayout.astro';
-import PageHeader from '@brainage04/astro-shell/components/PageHeader.astro';
 import TerminalPanel from '@brainage04/astro-shell/components/TerminalPanel.astro';
 import type { RecipePageData } from '../data/recipes';
 
@@ -30,7 +29,7 @@ const estimatedMassGrams = recipe.ingredients.reduce((total, ingredient) => {
 
 <SiteLayout title={recipe.pageTitle} description={recipe.description}>
   <div class="site-stack">
-    <PageHeader title={String(recipe.meta.title)} />
+    <p class="recipe-source">Source: <a href={String(recipe.meta.sourceUrl)}>{String(recipe.meta.sourceName)}</a></p>
     <TerminalPanel title="Calculator" class="stack" id="calculator">
       <div class="calculator-grid" aria-live="polite">
         <div class="control-card batch-card">
