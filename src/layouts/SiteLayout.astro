@@ -1,19 +1,24 @@
 ---
 import ShellLayout from '@brainage04/astro-shell/components/SiteLayout.astro';
 import '../styles/app.css';
-import { baseHref, recipeHref, recipes } from '../data/recipes';
+import { recipes } from '../data/recipes';
 
 export interface Props {
   title: string;
   description?: string;
 }
 
-const { title, description = 'Recipe batch scalers, Woolworths cost calculators, substitutions, and bake notes.' } = Astro.props;
-const baseUrl = baseHref();
+const { title, description = 'Recipe batch scalers, Woolworths cost calculators, substitutions, and bake notes.' } =
+  Astro.props;
 const navItems = [
-  { name: 'Home', href: baseUrl, match: baseUrl, activeMode: 'exact' },
-  ...recipes.map((recipe) => ({ name: recipe.navTitle, href: recipeHref(recipe.slug), match: recipeHref(recipe.slug), activeMode: 'exact' as const })),
-  { name: 'Shopping list', href: `${baseUrl}ShoppingList/`, match: `${baseUrl}ShoppingList/`, activeMode: 'exact' as const },
+  { name: 'Home', href: '/', match: '/', activeMode: 'exact' },
+  ...recipes.map((recipe) => ({
+    name: recipe.navTitle,
+    href: `/${recipe.slug}/`,
+    match: `/${recipe.slug}/`,
+    activeMode: 'exact' as const,
+  })),
+  { name: 'Shopping list', href: '/ShoppingList/', match: '/ShoppingList/', activeMode: 'exact' as const },
   { name: 'Main site', href: 'https://brainage04.github.io/', external: true },
 ] as const;
 ---

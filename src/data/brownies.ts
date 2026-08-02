@@ -38,7 +38,6 @@ export const sourceInstructions = [
   'Once cooled, keep the brownies in an airtight container for up to a week, or freeze tightly wrapped for up to a month.',
 ] as const;
 
-
 const woolworthsSearchSource =
   'Woolworths online search result observed for the selected shopping target; final in-store pricing can differ until the store is selected in Woolworths.';
 const woolworthsProductSource =
@@ -130,7 +129,8 @@ export const ingredients: IngredientChoice[] = [
         source: woolworthsSearchSource,
         kcalPer100g: 3110 / 4.184,
         macrosPer100g: { protein: 0.6, carbohydrates: 0.6, fat: 82.9 },
-        nutritionNote: 'Nutrition uses Essentials Unsalted Butter 250g label because the 500g search result page did not expose nutrition.',
+        nutritionNote:
+          'Nutrition uses Essentials Unsalted Butter 250g label because the 500g search result page did not expose nutrition.',
       },
     },
   },

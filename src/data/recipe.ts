@@ -1,5 +1,5 @@
 export const recipeMeta = {
-  title: "Chewy Chocolate Chip Cookies",
+  title: 'Chewy Chocolate Chip Cookies',
   sourceName: "Sally's Baking Addiction",
   sourceUrl: 'https://sallysbakingaddiction.com/chewy-chocolate-chip-cookies/',
   sourceYield: '16 XL cookies or 20 medium/large cookies',
@@ -38,8 +38,6 @@ export const sourceInstructions = [
   'After removing the cookies from the oven, slide each sheet of baking paper off the hot trays and onto the kitchen counter. Lightly cover the cookies with kitchen towels and let them cool/rest for 20 minutes before eating or storing; optional: press extra chocolate chips into the tops while warm.',
   'Store tightly covered at room temperature for up to 1 week. Fridge storage is also fine.',
 ] as const;
-
-
 
 export type Unit = 'g' | 'ml' | 'egg';
 
@@ -223,7 +221,8 @@ export const ingredients: IngredientChoice[] = [
         source: woolworthsSearchSource,
         kcalPer100g: 3110 / 4.184,
         macrosPer100g: { protein: 0.6, carbohydrates: 0.6, fat: 82.9 },
-        nutritionNote: 'Nutrition uses Essentials Unsalted Butter 250g label because the 500g search result page did not expose nutrition.',
+        nutritionNote:
+          'Nutrition uses Essentials Unsalted Butter 250g label because the 500g search result page did not expose nutrition.',
       },
     },
   },

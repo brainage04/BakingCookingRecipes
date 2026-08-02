@@ -2,6 +2,8 @@ import * as brownieData from './brownies';
 import * as cookieData from './recipe';
 import type { IngredientChoice } from './recipe';
 
+export type RecipeMeta = typeof brownieData.recipeMeta | typeof cookieData.recipeMeta;
+
 export interface AlternativeControl {
   key: string;
   productKey: 'stevia' | 'brownMonkfruit' | 'proteinFlour';
@@ -15,7 +17,7 @@ export interface RecipePageData {
   cardTitle: string;
   pageTitle: string;
   description: string;
-  meta: Record<string, unknown>;
+  meta: RecipeMeta;
   sourceIngredients: readonly string[];
   sourceInstructions: readonly string[];
   ingredients: readonly IngredientChoice[];
@@ -73,7 +75,8 @@ export const recipes = [
     navTitle: 'Brownies',
     cardTitle: 'Brownies',
     pageTitle: 'Brownies',
-    description: 'Gordon Ramsay Restaurants brownie recipe scaler with Woolworths cost calculator, substitutions, and bake notes.',
+    description:
+      'Gordon Ramsay Restaurants brownie recipe scaler with Woolworths cost calculator, substitutions, and bake notes.',
     meta: brownieData.recipeMeta,
     sourceIngredients: brownieData.sourceIngredients,
     sourceInstructions: brownieData.sourceInstructions,
@@ -83,15 +86,8 @@ export const recipes = [
     servingPlural: 'brownies',
     massLabel: 'Estimated batter',
     massDescription: `Batter estimate only; brownie count is fixed at ${brownieData.recipeMeta.servingsPerBatch} per batch.`,
-    unavailableNutritionNote: 'Vanilla excluded: Woolworths nutrition is unavailable. Optional chocolate chunks are included.',
+    unavailableNutritionNote:
+      'Vanilla excluded: Woolworths nutrition is unavailable. Optional chocolate chunks are included.',
     alternativeControls: standardAlternativeControls,
   },
 ] as const satisfies readonly RecipePageData[];
-
-export function baseHref() {
-  return `${import.meta.env.BASE_URL.replace(/\/$/, '')}/`;
-}
-
-export function recipeHref(slug: string) {
-  return `${baseHref()}${slug}/`;
-}

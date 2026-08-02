@@ -1,22 +1,31 @@
 ---
 import SiteLayout from '../layouts/SiteLayout.astro';
-import { baseHref, recipeHref, recipes } from '../data/recipes';
+import { withBase } from '@brainage04/astro-shell/withBase';
+import { recipes } from '../data/recipes';
 
-const shoppingHref = `${baseHref()}ShoppingList/`;
+const shoppingHref = withBase('/ShoppingList/');
 ---
-<SiteLayout title="Home" description="Recipe calculators for cookies and brownies with Woolworths cost estimates and bake notes.">
+
+<SiteLayout
+  title="Home"
+  description="Recipe calculators for cookies and brownies with Woolworths cost estimates and bake notes."
+>
   <div class="recipes-home">
     <h1 class="visually-hidden">BakingCookingRecipes</h1>
 
     <section class="home-section" aria-labelledby="recipes-title">
       <h2 id="recipes-title">Recipes</h2>
       <div class="recipe-grid">
-        {recipes.map((recipe) => (
-          <a class="recipe-card" href={recipeHref(recipe.slug)}>
-            <h3>{recipe.cardTitle}</h3>
-            <span>Open calculator <span aria-hidden="true">→</span></span>
-          </a>
-        ))}
+        {
+          recipes.map((recipe) => (
+            <a class="recipe-card" href={withBase(`/${recipe.slug}/`)}>
+              <h3>{recipe.cardTitle}</h3>
+              <span>
+                Open calculator <span aria-hidden="true">→</span>
+              </span>
+            </a>
+          ))
+        }
       </div>
     </section>
 

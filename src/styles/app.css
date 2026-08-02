@@ -1,5 +1,5 @@
 html:root {
-  --font-mono: "Courier New", Courier, monospace;
+  --font-mono: 'Courier New', Courier, monospace;
   --font-body: var(--font-mono);
   --font-family: var(--font-mono);
   --background0: #171218;
@@ -61,13 +61,10 @@ html body {
   border: 0;
 }
 
-
 .recipes-home {
   display: grid;
   gap: clamp(3.5rem, 9vw, 7rem);
 }
-
-
 
 .home-section {
   display: grid;
@@ -97,7 +94,9 @@ html body {
   color: var(--foreground0);
   text-decoration: none;
   box-shadow: var(--shadow-soft);
-  transition: translate 160ms ease, border-color 160ms ease;
+  transition:
+    translate 160ms ease,
+    border-color 160ms ease;
 }
 
 .recipe-card:hover,
@@ -115,7 +114,6 @@ html body {
 .shopping-card {
   grid-column: 1 / -1;
 }
-
 
 .calculator-grid {
   display: grid;
@@ -261,7 +259,6 @@ tbody tr:hover {
 ol li + li {
   margin-block-start: 1rem;
 }
-
 
 .shopping-breakdown {
   margin-block: 0;
