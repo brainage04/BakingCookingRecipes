@@ -20,9 +20,7 @@ const shoppingHref = withBase('/ShoppingList/');
           recipes.map((recipe) => (
             <a class="recipe-card" href={withBase(`/${recipe.slug}/`)}>
               <h3>{recipe.cardTitle}</h3>
-              <span>
-                Open calculator <span aria-hidden="true">→</span>
-              </span>
+              <span>Open calculator</span>
             </a>
           ))
         }
@@ -34,7 +32,7 @@ const shoppingHref = withBase('/ShoppingList/');
       <div class="recipe-grid">
         <a class="recipe-card shopping-card" href={shoppingHref}>
           <h3>Open combined shopping list</h3>
-          <span>Combine recipe ingredients <span aria-hidden="true">→</span></span>
+          <span>Combine recipe ingredients</span>
         </a>
       </div>
     </section>

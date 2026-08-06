@@ -38,6 +38,29 @@ const ingredient: IngredientChoice = {
   products: { default: standardProduct, stevia: alternativeProduct },
 };
 
+const vanillaIngredient: IngredientChoice = {
+  ...ingredient,
+  key: 'vanilla',
+  label: 'Vanilla extract',
+  metricQuantity: 10,
+  metricUnit: 'ml',
+  costQuantity: 10,
+  costUnit: 'ml',
+  nutritionQuantity: 10,
+  nutritionUnit: 'ml',
+  products: {
+    default: {
+      ...standardProduct,
+      id: 'vanilla',
+      name: 'Vanilla extract',
+      packageQuantity: 50,
+      packageUnit: 'ml',
+      kcalPer100g: 288,
+      macrosPer100g: null,
+    },
+  },
+};
+
 const controls = [
   {
     key: 'stevia',
@@ -63,6 +86,14 @@ describe('recipe calculations', () => {
     expect(result.basketTotal).toBe(6);
     expect(result.caloriesPerBatch).toBe(10);
     expect(result.caloriesPerServing).toBe(2.5);
+  });
+
+  it('includes the vanilla calorie estimate for millilitre-based ingredients', () => {
+    const result = calculateRecipe([vanillaIngredient], [], {}, 1, 16);
+
+    expect(result.caloriesPerBatch).toBeCloseTo(28.8);
+    expect(result.caloriesPerServing).toBeCloseTo(1.8);
+    expect(result.macrosPerBatch).toEqual({ protein: 0, carbohydrates: 0, fat: 0 });
   });
 
   it('combines matching products before rounding up packages', () => {

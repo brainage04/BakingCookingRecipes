@@ -22,27 +22,29 @@ const alternativeControls = Array.from(
 >
   <div class="site-stack">
     <TerminalPanel class="stack" id="shopping-list">
-      <div class="calculator-grid" aria-live="polite">
-        {
-          shoppingRecipes.map((recipe) => (
-            <div class="control-card">
-              <label class="field" for={`batch-${recipe.slug}`}>
-                <span>{recipe.title} batches</span>
-                <input
-                  id={`batch-${recipe.slug}`}
-                  data-recipe-batches={recipe.slug}
-                  type="number"
-                  min="0"
-                  step="any"
-                  inputmode="decimal"
-                  value="1"
-                />
-              </label>
-            </div>
-          ))
-        }
+      <div class="shopping-controls" aria-live="polite">
+        <div class="shopping-batches" aria-label="Recipe batch counts">
+          {
+            shoppingRecipes.map((recipe) => (
+              <div class="control-card">
+                <label class="field" for={`batch-${recipe.slug}`}>
+                  <span>{recipe.title} batches</span>
+                  <input
+                    id={`batch-${recipe.slug}`}
+                    data-recipe-batches={recipe.slug}
+                    type="number"
+                    min="0"
+                    step="any"
+                    inputmode="decimal"
+                    value="1"
+                  />
+                </label>
+              </div>
+            ))
+          }
+        </div>
 
-        <div class="control-card toggle-list" aria-label="Ingredient alternatives">
+        <div class="control-card toggle-list shopping-toggles" aria-label="Ingredient alternatives">
           {
             alternativeControls.map((control) => (
               <label>
@@ -58,15 +60,17 @@ const alternativeControls = Array.from(
           }
         </div>
 
-        <div class="stat-card stat-used-cost">
-          <span>Used ingredient cost</span>
-          <output id="used-cost-output">—</output>
-          <small>Proportional cost across both recipes.</small>
-        </div>
-        <div class="stat-card stat-basket">
-          <span>Basket estimate</span>
-          <output id="basket-cost-output">—</output>
-          <small>Rounds combined quantities up to whole Woolworths packs.</small>
+        <div class="shopping-summary" aria-label="Shopping list totals">
+          <div class="stat-card stat-used-cost">
+            <span>Used ingredient cost</span>
+            <output id="used-cost-output">—</output>
+            <small>Proportional cost across both recipes.</small>
+          </div>
+          <div class="stat-card stat-basket">
+            <span>Basket estimate</span>
+            <output id="basket-cost-output">—</output>
+            <small>Rounds combined quantities up to whole Woolworths packs.</small>
+          </div>
         </div>
       </div>
 
