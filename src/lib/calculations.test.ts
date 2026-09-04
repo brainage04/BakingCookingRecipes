@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { IngredientChoice, ProductChoice } from '../data/recipe';
-import type { AlternativeControl } from '../data/recipes';
+import { recipes, type AlternativeControl } from '../data/recipes';
 import { calculateRecipe, calculateShoppingList, formatQuantity, normalizeBatchInput } from './calculations';
 
 const standardProduct: ProductChoice = {
@@ -117,5 +117,73 @@ describe('recipe calculations', () => {
     expect(formatQuantity(1.25, 'g')).toBe('1.3g');
     expect(formatQuantity(1, 'egg')).toBe('1 egg');
     expect(formatQuantity(2, 'egg')).toBe('2 eggs');
+  });
+
+  it('keeps configured recipe data and calculated totals valid', () => {
+    const alternatives = Object.fromEntries(
+      recipes.flatMap((recipe) => recipe.alternativeControls.map((control) => [control.key, control.defaultChecked])),
+    );
+
+    for (const recipe of recipes) {
+      expect(recipe.servingsPerBatch).toBeGreaterThan(0);
+      expect(new Set(recipe.ingredients.map(({ key }) => key)).size).toBe(recipe.ingredients.length);
+
+      for (const ingredient of recipe.ingredients) {
+        expect(ingredient.metricQuantity).toBeGreaterThanOrEqual(0);
+        expect(ingredient.costQuantity).toBeGreaterThanOrEqual(0);
+        expect(ingredient.nutritionQuantity).toBeGreaterThanOrEqual(0);
+
+        for (const product of Object.values(ingredient.products)) {
+          if (!product) continue;
+          expect(product.packageQuantity).toBeGreaterThan(0);
+          expect(product.priceAud).toBeGreaterThanOrEqual(0);
+          if (product.kcalPer100g !== null) expect(product.kcalPer100g).toBeGreaterThanOrEqual(0);
+          if (product.macrosPer100g) {
+            for (const macro of Object.values(product.macrosPer100g)) {
+              expect(macro).toBeGreaterThanOrEqual(0);
+            }
+          }
+        }
+      }
+
+      const result = calculateRecipe(
+        recipe.ingredients,
+        recipe.alternativeControls,
+        alternatives,
+        1,
+        recipe.servingsPerBatch,
+      );
+      for (const value of [
+        result.servings,
+        result.massGrams,
+        result.caloriesPerBatch,
+        result.caloriesPerServing,
+        result.usedTotal,
+        result.basketTotal,
+        ...Object.values(result.macrosPerBatch),
+        ...Object.values(result.macrosPerServing),
+      ]) {
+        expect(Number.isFinite(value)).toBe(true);
+        expect(value).toBeGreaterThanOrEqual(0);
+      }
+    }
+
+    const shoppingList = calculateShoppingList(
+      recipes.map((recipe) => ({
+        slug: recipe.slug,
+        title: recipe.cardTitle,
+        ingredients: recipe.ingredients,
+        alternativeControls: recipe.alternativeControls,
+      })),
+      Object.fromEntries(recipes.map(({ slug }) => [slug, 1])),
+      alternatives,
+    );
+    expect(shoppingList.rows.length).toBeGreaterThan(0);
+    expect(Number.isFinite(shoppingList.usedTotal)).toBe(true);
+    expect(Number.isFinite(shoppingList.basketTotal)).toBe(true);
+    for (const row of shoppingList.rows) {
+      expect(row.packageCount).toBeGreaterThan(0);
+      expect(Number.isFinite(row.basketCost)).toBe(true);
+    }
   });
 });
