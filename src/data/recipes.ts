@@ -1,6 +1,6 @@
 import * as brownieData from './brownies';
-import * as cookieData from './recipe';
-import type { IngredientChoice } from './recipe';
+import * as cookieData from './cookies';
+import type { IngredientChoice } from './types';
 
 export type RecipeMeta = typeof brownieData.recipeMeta | typeof cookieData.recipeMeta;
 
@@ -53,7 +53,7 @@ const standardAlternativeControls = [
 
 export const recipes = [
   {
-    slug: 'Cookies',
+    slug: 'cookies',
     navTitle: 'Cookies',
     cardTitle: 'Chocolate Chip Cookies',
     pageTitle: 'Cookies',
@@ -71,7 +71,7 @@ export const recipes = [
     alternativeControls: standardAlternativeControls,
   },
   {
-    slug: 'Brownies',
+    slug: 'brownies',
     navTitle: 'Brownies',
     cardTitle: 'Brownies',
     pageTitle: 'Brownies',
