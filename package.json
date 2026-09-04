@@ -14,7 +14,7 @@
     "preview": "astro preview"
   },
   "dependencies": {
-    "@brainage04/astro-shell": "0.4.1",
+    "@brainage04/astro-shell": "0.4.2",
     "@webtui/css": "0.1.10"
   },
   "devDependencies": {
