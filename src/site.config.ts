@@ -17,7 +17,7 @@ export const siteConfig = {
     { name: 'Main site', href: 'https://brainage04.github.io/', external: true },
   ],
   sourceHref: 'https://github.com/brainage04/BakingCookingRecipes',
-  faviconHref: '/favicon.jpg',
+  faviconHref: '/pfp.jpg',
   faviconType: 'image/jpeg',
   image: undefined,
   themeColor: '#171218',
