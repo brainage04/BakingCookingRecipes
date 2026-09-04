@@ -3,7 +3,7 @@ import SiteLayout from '../layouts/SiteLayout.astro';
 import { withBase } from '@brainage04/astro-shell/withBase';
 import { recipes } from '../data/recipes';
 
-const shoppingHref = withBase('/ShoppingList/');
+const shoppingHref = withBase('/shopping-list/');
 ---
 
 <SiteLayout
@@ -11,7 +11,7 @@ const shoppingHref = withBase('/ShoppingList/');
   description="Recipe calculators for cookies and brownies with Woolworths cost estimates and bake notes."
 >
   <div class="recipes-home">
-    <h1 class="visually-hidden">BakingCookingRecipes</h1>
+    <h1 class="sr-only">BakingCookingRecipes</h1>
 
     <section class="home-section" aria-labelledby="recipes-title">
       <h2 id="recipes-title">Recipes</h2>

@@ -1,5 +1,5 @@
 import type { AlternativeControl } from '../data/recipes';
-import type { ProductChoice } from '../data/recipe';
+import type { ProductChoice } from '../data/types';
 import {
   calculateShoppingList,
   formatQuantity,

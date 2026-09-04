@@ -1,35 +1,17 @@
 ---
 import ShellLayout from '@brainage04/astro-shell/components/SiteLayout.astro';
-import '../styles/app.css';
-import { recipes } from '../data/recipes';
+import { siteConfig } from '../site.config';
+import '../styles/site.css';
 
 export interface Props {
   title: string;
   description?: string;
+  image?: string;
 }
 
-const { title, description = 'Recipe batch scalers, Woolworths cost calculators, substitutions, and bake notes.' } =
-  Astro.props;
-const navItems = [
-  { name: 'Home', href: '/', match: '/', activeMode: 'exact' },
-  ...recipes.map((recipe) => ({
-    name: recipe.navTitle,
-    href: `/${recipe.slug}/`,
-    match: `/${recipe.slug}/`,
-    activeMode: 'exact' as const,
-  })),
-  { name: 'Shopping list', href: '/ShoppingList/', match: '/ShoppingList/', activeMode: 'exact' as const },
-  { name: 'Main site', href: 'https://brainage04.github.io/' },
-] as const;
+const { title, description = siteConfig.description, image = siteConfig.image } = Astro.props;
 ---
 
-<ShellLayout
-  title={title}
-  siteName="BakingCookingRecipes"
-  homeTitle="BakingCookingRecipes"
-  navItems={navItems}
-  sourceHref="https://github.com/brainage04/BakingCookingRecipes"
-  description={description}
->
+<ShellLayout {...siteConfig} title={title} description={description} image={image}>
   <slot />
 </ShellLayout>

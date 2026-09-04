@@ -136,7 +136,5 @@ const estimatedMassGrams = recipe.ingredients.reduce((total, ingredient) => {
 
   <script is:inline type="application/json" id="calculator-data" set:html={JSON.stringify(calculatorData)} />
 
-  <script>
-    import '../scripts/recipeCalculator';
-  </script>
+  <script src="../scripts/recipeCalculator.ts"></script>
 </SiteLayout>

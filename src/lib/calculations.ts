@@ -1,5 +1,5 @@
 import type { AlternativeControl } from '../data/recipes';
-import type { IngredientChoice, MacroBreakdown, ProductChoice, Unit } from '../data/recipe';
+import type { IngredientChoice, MacroBreakdown, ProductChoice, Unit } from '../data/types';
 
 export type AlternativeState = Readonly<Record<string, boolean>>;
 

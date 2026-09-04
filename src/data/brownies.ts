@@ -1,4 +1,4 @@
-import type { IngredientChoice } from './recipe';
+import type { IngredientChoice } from './types';
 
 export const recipeMeta = {
   title: "World's Best Brownies",

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { IngredientChoice, ProductChoice } from '../data/recipe';
+import type { IngredientChoice, ProductChoice } from '../data/types';
 import { recipes, type AlternativeControl } from '../data/recipes';
 import { calculateRecipe, calculateShoppingList, formatQuantity, normalizeBatchInput } from './calculations';
 

@@ -1,5 +1,5 @@
 import type { AlternativeControl } from '../data/recipes';
-import type { IngredientChoice, MacroBreakdown, ProductChoice } from '../data/recipe';
+import type { IngredientChoice, MacroBreakdown, ProductChoice } from '../data/types';
 import { calculateRecipe, formatQuantity, normalizeBatchInput } from '../lib/calculations';
 
 interface CalculatorData {
