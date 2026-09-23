@@ -1,11 +1,20 @@
 import type { AlternativeControl } from '../data/recipes';
 import type { IngredientChoice, MacroBreakdown, ProductChoice } from '../data/types';
-import { calculateRecipe, formatQuantity, normalizeBatchInput } from '../lib/calculations';
+import {
+  calculateRecipe,
+  formatQuantity,
+  normalizeBatchInput,
+  type IngredientCalculation,
+  type RecipeCalculation,
+} from '../lib/calculations';
+import { appendCell, productSummary } from './tableCells';
 
 interface CalculatorData {
   ingredients: readonly IngredientChoice[];
   alternativeControls: readonly AlternativeControl[];
   servingsPerBatch: number;
+  servingSingular: string;
+  servingPlural: string;
 }
 
 const dataElement = document.getElementById('calculator-data');
@@ -33,6 +42,7 @@ const elements = {
   usedCostOutput: getElement<HTMLOutputElement>('used-cost-output'),
   basketCostOutput: getElement<HTMLOutputElement>('basket-cost-output'),
   ingredientRows: getElement<HTMLTableSectionElement>('ingredient-rows'),
+  summary: getElement<HTMLElement>('calculator-summary'),
   alternativeToggles: document.querySelectorAll<HTMLInputElement>('[data-alternative-key]'),
 };
 
@@ -51,38 +61,28 @@ function formatMacros(macros: MacroBreakdown): string {
   return `Protein ${number.format(macros.protein)}g\nCarbs ${number.format(macros.carbohydrates)}g\nFat ${number.format(macros.fat)}g`;
 }
 
-function renderCell(row: HTMLTableRowElement, text: string): void {
-  const cell = document.createElement('td');
-  cell.dataset.label = tableLabels[row.children.length] ?? '';
-  cell.textContent = text;
-  row.append(cell);
-}
-
 function renderProductCell(row: HTMLTableRowElement, product: ProductChoice): void {
-  const cell = document.createElement('td');
-  cell.dataset.label = tableLabels[row.children.length] ?? '';
-
-  const link = document.createElement('a');
-  link.href = product.url;
-  link.textContent = product.name;
-  link.target = '_blank';
-  link.rel = 'noreferrer';
-
-  const meta = document.createElement('div');
-  meta.className = 'muted';
-  meta.textContent = `${product.unitPriceLabel} · product ${product.id}`;
-  cell.append(link, meta);
-
+  const summary = productSummary(product);
   if (product.nutritionNote) {
     const note = document.createElement('small');
     note.className = 'muted';
     note.textContent = product.nutritionNote;
-    cell.append(document.createElement('br'), note);
+    summary.append(document.createElement('br'), note);
   }
-  row.append(cell);
+  appendCell(row, tableLabels, [summary]);
 }
 
-function render(): void {
+function basketText({ basket, product }: IngredientCalculation): string {
+  if ('sharedWith' in basket) return `Included in ${basket.sharedWith} packs`;
+  return `${basket.packageCount} x ${product.name} · ${currency.format(basket.cost)}`;
+}
+
+function announce(calculation: RecipeCalculation): void {
+  const servings = `${number.format(calculation.servings)} ${calculation.servings === 1 ? data.servingSingular : data.servingPlural}`;
+  elements.summary.textContent = `${number.format(batches)} ${batches === 1 ? 'batch' : 'batches'}: ${servings}, ${number.format(calculation.caloriesPerServing)} kcal per ${data.servingSingular}, basket estimate ${currency.format(calculation.basketTotal)}.`;
+}
+
+function render(): RecipeCalculation {
   const calculation = calculateRecipe(
     data.ingredients,
     data.alternativeControls,
@@ -94,12 +94,12 @@ function render(): void {
 
   for (const item of calculation.rows) {
     const row = document.createElement('tr');
-    renderCell(row, item.ingredient.label);
-    renderCell(row, item.ingredient.sourceAmount);
-    renderCell(row, formatQuantity(item.scaledMetric, item.ingredient.metricUnit));
+    appendCell(row, tableLabels, item.ingredient.label);
+    appendCell(row, tableLabels, item.ingredient.sourceAmount);
+    appendCell(row, tableLabels, formatQuantity(item.scaledMetric, item.ingredient.metricUnit));
     renderProductCell(row, item.product);
-    renderCell(row, currency.format(item.scaledCost));
-    renderCell(row, `${item.basket.packageCount} x ${item.product.name} · ${currency.format(item.basket.cost)}`);
+    appendCell(row, tableLabels, currency.format(item.scaledCost));
+    appendCell(row, tableLabels, basketText(item));
     elements.ingredientRows.append(row);
   }
 
@@ -111,18 +111,19 @@ function render(): void {
   elements.macrosServingOutput.textContent = formatMacros(calculation.macrosPerServing);
   elements.usedCostOutput.textContent = currency.format(calculation.usedTotal);
   elements.basketCostOutput.textContent = currency.format(calculation.basketTotal);
+  return calculation;
 }
 
 elements.batchInput.addEventListener('input', () => {
   batches = normalizeBatchInput(elements.batchInput.value);
-  render();
+  announce(render());
 });
 
 for (const toggle of elements.alternativeToggles) {
   toggle.addEventListener('change', () => {
     const key = toggle.dataset.alternativeKey;
     if (key) alternatives[key] = toggle.checked;
-    render();
+    announce(render());
   });
 }
 

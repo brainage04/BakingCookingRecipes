@@ -46,6 +46,18 @@ const woolworthsSearchSource =
 const woolworthsProductSource =
   'Woolworths product page for identity/nutrition plus Woolworths search result for current price.';
 
+/** The whole egg and the extra yolk are bought from the same carton, so the shopping list combines them. */
+const eggCarton = {
+  id: '165367',
+  name: 'Woolworths 12 Extra Large Barn Laid Cage Free Eggs 700g',
+  packageQuantity: 12,
+  packageUnit: 'egg',
+  priceAud: 5,
+  unitPriceLabel: '$0.71 / 100g',
+  url: 'https://www.woolworths.com.au/shop/productdetails/165367/woolworths-12-extra-large-cage-free-eggs',
+  source: woolworthsProductSource,
+} as const;
+
 export const ingredients: IngredientChoice[] = [
   {
     key: 'flour',
@@ -55,8 +67,7 @@ export const ingredients: IngredientChoice[] = [
     metricUnit: 'g',
     costQuantity: 281,
     costUnit: 'g',
-    nutritionQuantity: 281,
-    nutritionUnit: 'g',
+    batchGrams: 281,
     products: {
       default: {
         id: '33282',
@@ -92,8 +103,7 @@ export const ingredients: IngredientChoice[] = [
     metricUnit: 'g',
     costQuantity: 4.6,
     costUnit: 'g',
-    nutritionQuantity: 0,
-    nutritionUnit: 'g',
+    batchGrams: 4.6,
     products: {
       default: {
         id: '251189',
@@ -118,8 +128,7 @@ export const ingredients: IngredientChoice[] = [
     metricUnit: 'g',
     costQuantity: 4,
     costUnit: 'g',
-    nutritionQuantity: 4,
-    nutritionUnit: 'g',
+    batchGrams: 4,
     products: {
       default: {
         id: '39128',
@@ -143,8 +152,7 @@ export const ingredients: IngredientChoice[] = [
     metricUnit: 'g',
     costQuantity: 3,
     costUnit: 'g',
-    nutritionQuantity: 0,
-    nutritionUnit: 'g',
+    batchGrams: 3,
     products: {
       default: {
         id: '37687',
@@ -169,8 +177,7 @@ export const ingredients: IngredientChoice[] = [
     metricUnit: 'g',
     costQuantity: 170,
     costUnit: 'g',
-    nutritionQuantity: 170,
-    nutritionUnit: 'g',
+    batchGrams: 170,
     products: {
       default: {
         id: '450346',
@@ -196,8 +203,7 @@ export const ingredients: IngredientChoice[] = [
     metricUnit: 'g',
     costQuantity: 150,
     costUnit: 'g',
-    nutritionQuantity: 150,
-    nutritionUnit: 'g',
+    batchGrams: 150,
     products: {
       default: {
         id: '720342',
@@ -233,8 +239,7 @@ export const ingredients: IngredientChoice[] = [
     metricUnit: 'g',
     costQuantity: 100,
     costUnit: 'g',
-    nutritionQuantity: 100,
-    nutritionUnit: 'g',
+    batchGrams: 100,
     products: {
       default: {
         id: '58537',
@@ -263,28 +268,39 @@ export const ingredients: IngredientChoice[] = [
     },
   },
   {
-    key: 'eggs',
-    label: 'Egg + egg yolk',
-    sourceAmount: '1 large egg + 1 egg yolk',
-    metricQuantity: 1.5,
+    key: 'egg',
+    label: 'Large egg',
+    sourceAmount: '1 large egg',
+    metricQuantity: 1,
     metricUnit: 'egg',
-    costQuantity: 1.5,
+    costQuantity: 1,
     costUnit: 'egg',
-    nutritionQuantity: 68,
-    nutritionUnit: 'g',
+    batchGrams: 50,
     products: {
       default: {
-        id: '165367',
-        name: 'Woolworths 12 Extra Large Barn Laid Cage Free Eggs 700g',
-        packageQuantity: 12,
-        packageUnit: 'egg',
-        priceAud: 5,
-        unitPriceLabel: '$0.71 / 100g',
-        url: 'https://www.woolworths.com.au/shop/productdetails/165367/woolworths-12-extra-large-cage-free-eggs',
-        source: woolworthsProductSource,
+        ...eggCarton,
         kcalPer100g: 596 / 4.184,
         macrosPer100g: { protein: 12.7, carbohydrates: 0.7, fat: 9.9 },
-        nutritionNote: 'Calories use about 68g edible egg for one large egg plus one yolk.',
+        nutritionNote: 'Nutrition uses about 50g edible egg per large egg.',
+      },
+    },
+  },
+  {
+    key: 'egg-yolk',
+    label: 'Egg yolk',
+    sourceAmount: '1 egg yolk',
+    metricQuantity: 1,
+    metricUnit: 'yolk',
+    costQuantity: 1,
+    costUnit: 'egg',
+    batchGrams: 17,
+    products: {
+      default: {
+        ...eggCarton,
+        kcalPer100g: 322,
+        macrosPer100g: { protein: 15.86, carbohydrates: 3.59, fat: 26.54 },
+        nutritionNote:
+          'Uses one whole egg per yolk. Nutrition uses USDA FoodData Central raw egg yolk (FDC 172184), about 17g per large yolk.',
       },
     },
   },
@@ -296,8 +312,7 @@ export const ingredients: IngredientChoice[] = [
     metricUnit: 'ml',
     costQuantity: 10,
     costUnit: 'ml',
-    nutritionQuantity: 10,
-    nutritionUnit: 'ml',
+    batchGrams: 8.4,
     products: {
       default: {
         id: '37419',
@@ -311,7 +326,7 @@ export const ingredients: IngredientChoice[] = [
         kcalPer100g: 288,
         macrosPer100g: null,
         nutritionNote:
-          'Calories use a USDA FoodData Central estimate of 288 kcal per 100mL; macros remain unavailable.',
+          '10mL is counted as 8.4g using USDA FoodData Central vanilla extract (FDC 173471: 4.2g per teaspoon, 288 kcal per 100g); macros remain unavailable.',
       },
     },
   },
@@ -323,8 +338,7 @@ export const ingredients: IngredientChoice[] = [
     metricUnit: 'g',
     costQuantity: 200,
     costUnit: 'g',
-    nutritionQuantity: 200,
-    nutritionUnit: 'g',
+    batchGrams: 200,
     products: {
       default: {
         id: '6036943',

@@ -1,7 +1,9 @@
 ---
+import SiteLayout from '@brainage04/astro-shell/components/SiteLayout.astro';
+import StatCard from '@brainage04/astro-shell/components/StatCard.astro';
 import TerminalPanel from '@brainage04/astro-shell/components/TerminalPanel.astro';
-import SiteLayout from '../layouts/SiteLayout.astro';
 import { recipes } from '../data/recipes';
+import PriceNote from '../components/PriceNote.astro';
 
 const shoppingRecipes = recipes.map((recipe) => ({
   slug: recipe.slug,
@@ -22,8 +24,9 @@ const alternativeControls = Array.from(
 >
   <div class="site-stack">
     <TerminalPanel class="stack" id="shopping-list">
-      <div class="shopping-controls" aria-live="polite">
-        <div class="shopping-batches" aria-label="Recipe batch counts">
+      <p id="shopping-summary-status" class="sr-only" role="status"></p>
+      <div class="shopping-controls">
+        <div class="shopping-batches" role="group" aria-label="Recipe batch counts">
           {
             shoppingRecipes.map((recipe) => (
               <div class="control-card">
@@ -44,7 +47,7 @@ const alternativeControls = Array.from(
           }
         </div>
 
-        <div class="control-card toggle-list shopping-toggles" aria-label="Ingredient alternatives">
+        <div class="control-card toggle-list shopping-toggles" role="group" aria-label="Ingredient alternatives">
           {
             alternativeControls.map((control) => (
               <label>
@@ -60,21 +63,25 @@ const alternativeControls = Array.from(
           }
         </div>
 
-        <div class="shopping-summary" aria-label="Shopping list totals">
-          <div class="stat-card stat-used-cost">
-            <span>Used ingredient cost</span>
-            <output id="used-cost-output">—</output>
-            <small>Proportional cost across both recipes.</small>
-          </div>
-          <div class="stat-card stat-basket">
-            <span>Basket estimate</span>
-            <output id="basket-cost-output">—</output>
-            <small>Rounds combined quantities up to whole Woolworths packs.</small>
-          </div>
+        <div class="shopping-summary" role="group" aria-label="Shopping list totals">
+          <StatCard
+            class="stat-used-cost"
+            label="Used ingredient cost"
+            valueId="used-cost-output"
+            note="Proportional cost across both recipes."
+          />
+          <StatCard
+            class="stat-basket"
+            label="Basket estimate"
+            valueId="basket-cost-output"
+            note="Rounds combined quantities up to whole Woolworths packs."
+          />
         </div>
       </div>
 
-      <div class="table-wrap" role="region" aria-label="Combined shopping list" tabindex="0">
+      <PriceNote priceDates={recipes.map((recipe) => recipe.meta.priceDate)} />
+
+      <div class="table-wrap table-wrap--stack" role="region" aria-label="Combined shopping list" tabindex="0">
         <table>
           <thead>
             <tr>

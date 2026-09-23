@@ -1,7 +1,10 @@
 ---
-import SiteLayout from '../layouts/SiteLayout.astro';
+import SiteLayout from '@brainage04/astro-shell/components/SiteLayout.astro';
+import StatCard from '@brainage04/astro-shell/components/StatCard.astro';
 import TerminalPanel from '@brainage04/astro-shell/components/TerminalPanel.astro';
 import type { RecipePageData } from '../data/recipes';
+import { batchMassGrams } from '../lib/calculations';
+import PriceNote from './PriceNote.astro';
 
 export interface Props {
   recipe: RecipePageData;
@@ -18,19 +21,15 @@ const calculatorData = {
 
 const servingPluralTitle = `${recipe.servingPlural.charAt(0).toUpperCase()}${recipe.servingPlural.slice(1)}`;
 
-const estimatedMassGrams = recipe.ingredients.reduce((total, ingredient) => {
-  if (ingredient.key === 'eggs') return total + ingredient.nutritionQuantity;
-  if (ingredient.metricUnit === 'ml') return total + ingredient.metricQuantity;
-  if (ingredient.metricUnit === 'g') return total + ingredient.metricQuantity;
-  return total;
-}, 0);
+const estimatedMassGrams = batchMassGrams(recipe.ingredients);
 ---
 
 <SiteLayout title={recipe.pageTitle} description={recipe.description}>
   <div class="site-stack">
     <p class="recipe-source">Source: <a href={recipe.meta.sourceUrl}>{recipe.meta.sourceName}</a></p>
     <TerminalPanel title="Calculator" class="stack" id="calculator">
-      <div class="calculator-grid" aria-live="polite">
+      <p id="calculator-summary" class="sr-only" role="status"></p>
+      <div class="calculator-grid">
         <div class="control-card batch-card">
           <label class="field" for="batch-input">
             <span>Batches</span>
@@ -47,7 +46,7 @@ const estimatedMassGrams = recipe.ingredients.reduce((total, ingredient) => {
           <small id="batch-help" class="muted">Enter any unsigned decimal batch count.</small>
         </div>
 
-        <div class="control-card toggle-list" aria-label="Ingredient alternatives">
+        <div class="control-card toggle-list" role="group" aria-label="Ingredient alternatives">
           {
             recipe.alternativeControls.map((control) => (
               <label>
@@ -62,49 +61,60 @@ const estimatedMassGrams = recipe.ingredients.reduce((total, ingredient) => {
             ))
           }
         </div>
-        <div class="stat-card stat-cookies">
-          <span>{servingPluralTitle}</span>
-          <output id="servings-output">—</output>
-          <small>{recipe.servingsPerBatch} {recipe.servingPlural} per batch.</small>
-        </div>
-        <div class="stat-card stat-dough">
-          <span>{recipe.massLabel}</span>
-          <output id="mass-output">{estimatedMassGrams.toFixed(0)}g</output>
-          <small>{recipe.massDescription}</small>
-        </div>
-        <div class="stat-card stat-calories-batch">
-          <span>Calories / batch</span>
-          <output id="calories-batch-output">—</output>
-          <small>{recipe.unavailableNutritionNote}</small>
-        </div>
-        <div class="stat-card stat-calories-serving">
-          <span>Calories / {recipe.servingSingular}</span>
-          <output id="calories-serving-output">—</output>
-          <small>Calories per batch ÷ {recipe.servingsPerBatch} {recipe.servingPlural}.</small>
-        </div>
-        <div class="stat-card stat-macros-batch">
-          <span>Macros / batch</span>
-          <output id="macros-batch-output">—</output>
-          <small>Protein / carbs / fat. {recipe.unavailableNutritionNote}</small>
-        </div>
-        <div class="stat-card stat-macros-serving">
-          <span>Macros / {recipe.servingSingular}</span>
-          <output id="macros-serving-output">—</output>
-          <small>Per {recipe.servingSingular}, using {recipe.servingsPerBatch} {recipe.servingPlural} per batch.</small>
-        </div>
-        <div class="stat-card stat-used-cost">
-          <span>Used ingredient cost</span>
-          <output id="used-cost-output">—</output>
-          <small>Proportional cost for the selected batch count.</small>
-        </div>
-        <div class="stat-card stat-basket">
-          <span>Basket estimate</span>
-          <output id="basket-cost-output">—</output>
-          <small>Rounds up to whole Woolworths packs.</small>
-        </div>
+        <StatCard
+          class="stat-cookies"
+          label={servingPluralTitle}
+          valueId="servings-output"
+          note={`${recipe.servingsPerBatch} ${recipe.servingPlural} per batch.`}
+        />
+        <StatCard
+          class="stat-dough"
+          label={recipe.massLabel}
+          valueId="mass-output"
+          value={`${estimatedMassGrams.toFixed(0)}g`}
+          note={recipe.massDescription}
+        />
+        <StatCard
+          class="stat-calories-batch"
+          label="Calories / batch"
+          valueId="calories-batch-output"
+          note={recipe.unavailableNutritionNote}
+        />
+        <StatCard
+          class="stat-calories-serving"
+          label={`Calories / ${recipe.servingSingular}`}
+          valueId="calories-serving-output"
+          note={`Calories per batch ÷ ${recipe.servingsPerBatch} ${recipe.servingPlural}.`}
+        />
+        <StatCard
+          class="stat-macros-batch"
+          label="Macros / batch"
+          valueId="macros-batch-output"
+          note={`Protein / carbs / fat. ${recipe.unavailableNutritionNote}`}
+        />
+        <StatCard
+          class="stat-macros-serving"
+          label={`Macros / ${recipe.servingSingular}`}
+          valueId="macros-serving-output"
+          note={`Per ${recipe.servingSingular}, using ${recipe.servingsPerBatch} ${recipe.servingPlural} per batch.`}
+        />
+        <StatCard
+          class="stat-used-cost"
+          label="Used ingredient cost"
+          valueId="used-cost-output"
+          note="Proportional cost for the selected batch count."
+        />
+        <StatCard
+          class="stat-basket"
+          label="Basket estimate"
+          valueId="basket-cost-output"
+          note="Rounds up to whole Woolworths packs."
+        />
       </div>
 
-      <div class="table-wrap" role="region" aria-label="Scaled ingredient costs" tabindex="0">
+      <PriceNote priceDates={[recipe.meta.priceDate]} />
+
+      <div class="table-wrap table-wrap--stack" role="region" aria-label="Scaled ingredient costs" tabindex="0">
         <table>
           <thead>
             <tr>

@@ -1,5 +1,8 @@
 export type Unit = 'g' | 'ml' | 'egg';
 
+/** Units for the scaled recipe amount; `yolk` counts egg yolks, which are still bought as whole eggs. */
+export type MetricUnit = Unit | 'yolk';
+
 export interface MacroBreakdown {
   protein: number;
   carbohydrates: number;
@@ -25,11 +28,15 @@ export interface IngredientChoice {
   label: string;
   sourceAmount: string;
   metricQuantity: number;
-  metricUnit: Unit;
+  metricUnit: MetricUnit;
   costQuantity: number;
   costUnit: Unit;
-  nutritionQuantity: number;
-  nutritionUnit: 'g' | 'ml';
+  /**
+   * Weight of one batch's worth of this ingredient in grams. Product nutrition is per 100g, so this drives calories
+   * and macros as well as the batch mass estimate. Volume ingredients convert millilitres to grams here and state
+   * the density they assume in the product's `nutritionNote`.
+   */
+  batchGrams: number;
   products: {
     default: ProductChoice;
     stevia?: ProductChoice;

@@ -52,8 +52,7 @@ export const ingredients: IngredientChoice[] = [
     metricUnit: 'g',
     costQuantity: 115,
     costUnit: 'g',
-    nutritionQuantity: 115,
-    nutritionUnit: 'g',
+    batchGrams: 115,
     products: {
       default: {
         id: '33282',
@@ -89,8 +88,7 @@ export const ingredients: IngredientChoice[] = [
     metricUnit: 'g',
     costQuantity: 1,
     costUnit: 'g',
-    nutritionQuantity: 0,
-    nutritionUnit: 'g',
+    batchGrams: 1,
     products: {
       default: {
         id: '37687',
@@ -115,8 +113,7 @@ export const ingredients: IngredientChoice[] = [
     metricUnit: 'g',
     costQuantity: 200,
     costUnit: 'g',
-    nutritionQuantity: 200,
-    nutritionUnit: 'g',
+    batchGrams: 200,
     products: {
       default: {
         id: '450346',
@@ -142,8 +139,7 @@ export const ingredients: IngredientChoice[] = [
     metricUnit: 'g',
     costQuantity: 125,
     costUnit: 'g',
-    nutritionQuantity: 125,
-    nutritionUnit: 'g',
+    batchGrams: 125,
     products: {
       default: {
         id: '720342',
@@ -179,8 +175,7 @@ export const ingredients: IngredientChoice[] = [
     metricUnit: 'g',
     costQuantity: 175,
     costUnit: 'g',
-    nutritionQuantity: 175,
-    nutritionUnit: 'g',
+    batchGrams: 175,
     products: {
       default: {
         id: '58537',
@@ -216,8 +211,7 @@ export const ingredients: IngredientChoice[] = [
     metricUnit: 'egg',
     costQuantity: 4,
     costUnit: 'egg',
-    nutritionQuantity: 200,
-    nutritionUnit: 'g',
+    batchGrams: 200,
     products: {
       default: {
         id: '165367',
@@ -242,8 +236,7 @@ export const ingredients: IngredientChoice[] = [
     metricUnit: 'ml',
     costQuantity: 10,
     costUnit: 'ml',
-    nutritionQuantity: 10,
-    nutritionUnit: 'ml',
+    batchGrams: 8.4,
     products: {
       default: {
         id: '37419',
@@ -257,7 +250,7 @@ export const ingredients: IngredientChoice[] = [
         kcalPer100g: 288,
         macrosPer100g: null,
         nutritionNote:
-          'Calories use a USDA FoodData Central estimate of 288 kcal per 100mL; macros remain unavailable.',
+          '10mL is counted as 8.4g using USDA FoodData Central vanilla extract (FDC 173471: 4.2g per teaspoon, 288 kcal per 100g); macros remain unavailable.',
       },
     },
   },
@@ -269,8 +262,7 @@ export const ingredients: IngredientChoice[] = [
     metricUnit: 'g',
     costQuantity: 245,
     costUnit: 'g',
-    nutritionQuantity: 245,
-    nutritionUnit: 'g',
+    batchGrams: 245,
     products: {
       default: {
         id: '6036943',
@@ -294,8 +286,7 @@ export const ingredients: IngredientChoice[] = [
     metricUnit: 'g',
     costQuantity: 100,
     costUnit: 'g',
-    nutritionQuantity: 100,
-    nutritionUnit: 'g',
+    batchGrams: 100,
     products: {
       default: {
         id: '6036943',

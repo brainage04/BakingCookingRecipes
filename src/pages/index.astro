@@ -1,15 +1,12 @@
 ---
-import SiteLayout from '../layouts/SiteLayout.astro';
+import SiteLayout from '@brainage04/astro-shell/components/SiteLayout.astro';
 import { withBase } from '@brainage04/astro-shell/withBase';
 import { recipes } from '../data/recipes';
 
 const shoppingHref = withBase('/shopping-list/');
 ---
 
-<SiteLayout
-  title="Home"
-  description="Recipe calculators for cookies and brownies with Woolworths cost estimates and bake notes."
->
+<SiteLayout description="Recipe calculators for cookies and brownies with Woolworths cost estimates and bake notes.">
   <div class="recipes-home">
     <h1 class="sr-only">BakingCookingRecipes</h1>
 

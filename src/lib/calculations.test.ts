@@ -1,7 +1,15 @@
 import { describe, expect, it } from 'vitest';
 import type { IngredientChoice, ProductChoice } from '../data/types';
+import { ingredients as cookieIngredients } from '../data/cookies';
 import { recipes, type AlternativeControl } from '../data/recipes';
-import { calculateRecipe, calculateShoppingList, formatQuantity, normalizeBatchInput } from './calculations';
+import {
+  calculateRecipe,
+  calculateShoppingList,
+  caloriesForBatch,
+  formatQuantity,
+  macrosForBatch,
+  normalizeBatchInput,
+} from './calculations';
 
 const standardProduct: ProductChoice = {
   id: 'standard',
@@ -33,8 +41,7 @@ const ingredient: IngredientChoice = {
   metricUnit: 'g',
   costQuantity: 50,
   costUnit: 'g',
-  nutritionQuantity: 50,
-  nutritionUnit: 'g',
+  batchGrams: 50,
   products: { default: standardProduct, stevia: alternativeProduct },
 };
 
@@ -46,8 +53,7 @@ const vanillaIngredient: IngredientChoice = {
   metricUnit: 'ml',
   costQuantity: 10,
   costUnit: 'ml',
-  nutritionQuantity: 10,
-  nutritionUnit: 'ml',
+  batchGrams: 8.4,
   products: {
     default: {
       ...standardProduct,
@@ -88,12 +94,48 @@ describe('recipe calculations', () => {
     expect(result.caloriesPerServing).toBe(2.5);
   });
 
-  it('includes the vanilla calorie estimate for millilitre-based ingredients', () => {
+  it('uses converted grams, not millilitres, for millilitre ingredient nutrition and mass', () => {
     const result = calculateRecipe([vanillaIngredient], [], {}, 1, 16);
 
-    expect(result.caloriesPerBatch).toBeCloseTo(28.8);
-    expect(result.caloriesPerServing).toBeCloseTo(1.8);
+    expect(result.caloriesPerBatch).toBeCloseTo(24.192);
+    expect(result.caloriesPerServing).toBeCloseTo(1.512);
     expect(result.macrosPerBatch).toEqual({ protein: 0, carbohydrates: 0, fat: 0 });
+    expect(result.massGrams).toBeCloseTo(8.4);
+  });
+
+  it('buys a whole egg for the cookie egg yolk and shares the egg carton', () => {
+    const cookies = recipes.find(({ slug }) => slug === 'cookies');
+    if (!cookies) throw new Error('Missing cookie recipe.');
+    const shopping = (batches: number) =>
+      calculateShoppingList(
+        [{ slug: 'cookies', title: 'Cookies', ingredients: cookies.ingredients, alternativeControls: [] }],
+        { cookies: batches },
+        {},
+      ).rows.find(({ unit }) => unit === 'egg');
+
+    expect(shopping(7)).toMatchObject({ quantity: 14, packageCount: 2, basketCost: 10 });
+    expect(shopping(6)).toMatchObject({ quantity: 12, packageCount: 1, basketCost: 5 });
+
+    const eggRows = (batches: number) =>
+      calculateRecipe(cookies.ingredients, [], {}, batches, cookies.servingsPerBatch).rows.filter(
+        ({ ingredient }) => ingredient.costUnit === 'egg',
+      );
+    expect(eggRows(7).map(({ basket }) => basket)).toEqual([
+      { packageCount: 2, cost: 10 },
+      { sharedWith: 'Large egg' },
+    ]);
+    expect(eggRows(4)[0]?.basket).toEqual({ packageCount: 1, cost: 5 });
+  });
+
+  it('uses raw egg yolk nutrition for the cookie egg yolk', () => {
+    const yolk = cookieIngredients.find(({ key }) => key === 'egg-yolk');
+    if (!yolk) throw new Error('Missing cookie egg yolk.');
+
+    expect(caloriesForBatch(yolk, yolk.products.default)).toBeCloseTo(54.74);
+    const macros = macrosForBatch(yolk, yolk.products.default);
+    expect(macros.protein).toBeCloseTo(2.6962);
+    expect(macros.carbohydrates).toBeCloseTo(0.6103);
+    expect(macros.fat).toBeCloseTo(4.5118);
   });
 
   it('combines matching products before rounding up packages', () => {
@@ -117,6 +159,8 @@ describe('recipe calculations', () => {
     expect(formatQuantity(1.25, 'g')).toBe('1.3g');
     expect(formatQuantity(1, 'egg')).toBe('1 egg');
     expect(formatQuantity(2, 'egg')).toBe('2 eggs');
+    expect(formatQuantity(1, 'yolk')).toBe('1 yolk');
+    expect(formatQuantity(3, 'yolk')).toBe('3 yolks');
   });
 
   it('keeps configured recipe data and calculated totals valid', () => {
@@ -131,7 +175,7 @@ describe('recipe calculations', () => {
       for (const ingredient of recipe.ingredients) {
         expect(ingredient.metricQuantity).toBeGreaterThanOrEqual(0);
         expect(ingredient.costQuantity).toBeGreaterThanOrEqual(0);
-        expect(ingredient.nutritionQuantity).toBeGreaterThanOrEqual(0);
+        expect(ingredient.batchGrams).toBeGreaterThanOrEqual(0);
 
         for (const product of Object.values(ingredient.products)) {
           if (!product) continue;

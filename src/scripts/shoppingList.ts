@@ -1,12 +1,13 @@
 import type { AlternativeControl } from '../data/recipes';
-import type { ProductChoice } from '../data/types';
 import {
   calculateShoppingList,
   formatQuantity,
   normalizeBatchInput,
   type ShoppingBreakdown,
+  type ShoppingCalculation,
   type ShoppingRecipe,
 } from '../lib/calculations';
+import { appendCell, productSummary } from './tableCells';
 
 interface ShoppingData {
   recipes: readonly ShoppingRecipe[];
@@ -34,32 +35,11 @@ const elements = {
   shoppingRows: getElement<HTMLTableSectionElement>('shopping-rows'),
   usedCostOutput: getElement<HTMLOutputElement>('used-cost-output'),
   basketCostOutput: getElement<HTMLOutputElement>('basket-cost-output'),
+  summary: getElement<HTMLElement>('shopping-summary-status'),
 };
 
 const currency = new Intl.NumberFormat('en-AU', { style: 'currency', currency: 'AUD' });
 const tableLabels = ['Woolworths item', 'Needed for recipes', 'Total needed', 'Packs to buy', 'Basket cost'];
-
-function appendCell(row: HTMLTableRowElement, content: string | HTMLElement): void {
-  const cell = document.createElement('td');
-  cell.dataset.label = tableLabels[row.children.length] ?? '';
-  if (typeof content === 'string') cell.textContent = content;
-  else cell.append(content);
-  row.append(cell);
-}
-
-function renderProductCell(row: HTMLTableRowElement, product: ProductChoice): void {
-  const wrapper = document.createElement('div');
-  const link = document.createElement('a');
-  link.href = product.url;
-  link.textContent = product.name;
-  link.target = '_blank';
-  link.rel = 'noreferrer';
-  const meta = document.createElement('div');
-  meta.className = 'muted';
-  meta.textContent = `${product.unitPriceLabel} · product ${product.id}`;
-  wrapper.append(link, meta);
-  appendCell(row, wrapper);
-}
 
 function renderBreakdownCell(row: HTMLTableRowElement, breakdown: readonly ShoppingBreakdown[]): void {
   const list = document.createElement('ul');
@@ -69,20 +49,25 @@ function renderBreakdownCell(row: HTMLTableRowElement, breakdown: readonly Shopp
     listItem.textContent = `${item.recipeTitle}: ${item.ingredientLabel} · ${formatQuantity(item.quantity, item.unit)}`;
     list.append(listItem);
   }
-  appendCell(row, list);
+  appendCell(row, tableLabels, [list]);
 }
 
-function render(): void {
+function announce(calculation: ShoppingCalculation): void {
+  const items = `${calculation.rows.length} ${calculation.rows.length === 1 ? 'item' : 'items'}`;
+  elements.summary.textContent = `${items}, basket estimate ${currency.format(calculation.basketTotal)}.`;
+}
+
+function render(): ShoppingCalculation {
   const calculation = calculateShoppingList(data.recipes, batchesBySlug, alternatives);
   elements.shoppingRows.replaceChildren();
 
   for (const item of calculation.rows) {
     const row = document.createElement('tr');
-    renderProductCell(row, item.product);
+    appendCell(row, tableLabels, [productSummary(item.product)]);
     renderBreakdownCell(row, item.breakdown);
-    appendCell(row, formatQuantity(item.quantity, item.unit));
-    appendCell(row, `${item.packageCount} x ${item.product.name}`);
-    appendCell(row, currency.format(item.basketCost));
+    appendCell(row, tableLabels, formatQuantity(item.quantity, item.unit));
+    appendCell(row, tableLabels, `${item.packageCount} x ${item.product.name}`);
+    appendCell(row, tableLabels, currency.format(item.basketCost));
     elements.shoppingRows.append(row);
   }
 
@@ -97,13 +82,14 @@ function render(): void {
 
   elements.usedCostOutput.textContent = currency.format(calculation.usedTotal);
   elements.basketCostOutput.textContent = currency.format(calculation.basketTotal);
+  return calculation;
 }
 
 for (const input of elements.batchInputs) {
   input.addEventListener('input', () => {
     const slug = input.dataset.recipeBatches;
     if (slug) batchesBySlug[slug] = normalizeBatchInput(input.value);
-    render();
+    announce(render());
   });
 }
 
@@ -111,7 +97,7 @@ for (const toggle of elements.alternativeToggles) {
   toggle.addEventListener('change', () => {
     const key = toggle.dataset.alternativeKey;
     if (key) alternatives[key] = toggle.checked;
-    render();
+    announce(render());
   });
 }
 

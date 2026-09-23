@@ -1,0 +1,20 @@
+---
+export interface Props {
+  /** ISO dates (YYYY-MM-DD) the prices were observed. */
+  priceDates: readonly string[];
+}
+
+const dateFormat = new Intl.DateTimeFormat('en-AU', { dateStyle: 'long', timeZone: 'UTC' });
+const dates = Array.from(new Set(Astro.props.priceDates)).sort();
+---
+
+<p class="price-note muted">
+  Woolworths online prices observed {
+    dates.map((date, index) => (
+      <>
+        {index > 0 && ', '}
+        <time datetime={date}>{dateFormat.format(new Date(`${date}T00:00:00Z`))}</time>
+      </>
+    ))
+  }. In-store prices can differ until you select your store in Woolworths.
+</p>

@@ -1,5 +1,5 @@
 import type { AlternativeControl } from '../data/recipes';
-import type { IngredientChoice, MacroBreakdown, ProductChoice, Unit } from '../data/types';
+import type { IngredientChoice, MacroBreakdown, MetricUnit, ProductChoice, Unit } from '../data/types';
 
 export type AlternativeState = Readonly<Record<string, boolean>>;
 
@@ -8,12 +8,21 @@ export interface IngredientCalculation {
   product: ProductChoice;
   scaledMetric: number;
   scaledCost: number;
-  basket: BasketCalculation;
+  /**
+   * Whole packs for this row's product. Ingredients sharing a product (egg and egg yolk) are bought together: the
+   * first row carries the combined basket and later rows point at it.
+   */
+  basket: BasketCalculation | SharedBasket;
 }
 
 export interface BasketCalculation {
   packageCount: number;
   cost: number;
+}
+
+export interface SharedBasket {
+  /** Label of the ingredient row whose basket includes this row. */
+  sharedWith: string;
 }
 
 export interface RecipeCalculation {
@@ -64,9 +73,15 @@ export function normalizeBatchInput(value: string): number {
   return Number.isFinite(batches) && batches >= 0 ? batches : 0;
 }
 
-export function formatQuantity(value: number, unit: Unit): string {
+export function formatQuantity(value: number, unit: MetricUnit): string {
   const formatted = Number.isInteger(value) ? String(value) : quantityNumber.format(value);
-  return `${formatted}${unit === 'egg' ? ` ${value === 1 ? 'egg' : 'eggs'}` : unit}`;
+  if (unit === 'g' || unit === 'ml') return `${formatted}${unit}`;
+  return `${formatted} ${value === 1 ? unit : `${unit}s`}`;
+}
+
+/** Products are the same purchase when these match, so their quantities share whole packs. */
+function productKey(product: ProductChoice): string {
+  return `${product.id}:${product.name}:${product.packageUnit}`;
 }
 
 export function productFor(
@@ -81,23 +96,29 @@ export function productFor(
   return ingredient.products.default;
 }
 
-export function usedCost(ingredient: IngredientChoice, product: ProductChoice, batches: number): number {
-  return (ingredient.costQuantity * batches * product.priceAud) / product.packageQuantity;
+/** `quantity` is in the product's package unit. */
+export function usedCost(product: ProductChoice, quantity: number): number {
+  return (quantity * product.priceAud) / product.packageQuantity;
 }
 
-export function basketFor(ingredient: IngredientChoice, product: ProductChoice, batches: number): BasketCalculation {
-  const packageCount = Math.ceil((ingredient.costQuantity * batches) / product.packageQuantity);
+/** `quantity` is in the product's package unit. */
+export function basketFor(product: ProductChoice, quantity: number): BasketCalculation {
+  const packageCount = Math.ceil(quantity / product.packageQuantity);
   return { packageCount, cost: packageCount * product.priceAud };
 }
 
 export function caloriesForBatch(ingredient: IngredientChoice, product: ProductChoice): number {
   if (product.kcalPer100g === null) return 0;
-  return (ingredient.nutritionQuantity * product.kcalPer100g) / 100;
+  return (ingredient.batchGrams * product.kcalPer100g) / 100;
 }
 
 export function macrosForBatch(ingredient: IngredientChoice, product: ProductChoice): MacroBreakdown {
   if (product.macrosPer100g === null) return { protein: 0, carbohydrates: 0, fat: 0 };
-  return scaleMacros(product.macrosPer100g, ingredient.nutritionQuantity / 100);
+  return scaleMacros(product.macrosPer100g, ingredient.batchGrams / 100);
+}
+
+export function batchMassGrams(ingredients: readonly IngredientChoice[]): number {
+  return ingredients.reduce((total, ingredient) => total + ingredient.batchGrams, 0);
 }
 
 export function addMacros(left: MacroBreakdown, right: MacroBreakdown): MacroBreakdown {
@@ -127,22 +148,32 @@ export function calculateRecipe(
   let macrosPerBatch: MacroBreakdown = { protein: 0, carbohydrates: 0, fat: 0 };
   let usedTotal = 0;
   let basketTotal = 0;
-  let massGramsPerBatch = 0;
 
-  const rows = ingredients.map((ingredient) => {
-    const product = productFor(ingredient, controls, alternatives);
-    const scaledCost = usedCost(ingredient, product, batches);
-    const basket = basketFor(ingredient, product, batches);
+  const selections = ingredients.map((ingredient) => ({
+    ingredient,
+    product: productFor(ingredient, controls, alternatives),
+    quantity: ingredient.costQuantity * batches,
+  }));
+  const productTotals = new Map<string, { owner: IngredientChoice; quantity: number }>();
+  for (const { ingredient, product, quantity } of selections) {
+    const total = productTotals.get(productKey(product));
+    if (total) total.quantity += quantity;
+    else productTotals.set(productKey(product), { owner: ingredient, quantity });
+  }
+
+  const rows = selections.map(({ ingredient, product, quantity }): IngredientCalculation => {
+    const scaledCost = usedCost(product, quantity);
+    const total = productTotals.get(productKey(product));
+    let basket: BasketCalculation | SharedBasket;
+    if (total && total.owner !== ingredient) basket = { sharedWith: total.owner.label };
+    else {
+      basket = basketFor(product, total?.quantity ?? quantity);
+      basketTotal += basket.cost;
+    }
 
     caloriesPerBatch += caloriesForBatch(ingredient, product);
     macrosPerBatch = addMacros(macrosPerBatch, macrosForBatch(ingredient, product));
     usedTotal += scaledCost;
-    basketTotal += basket.cost;
-
-    if (ingredient.key === 'eggs') massGramsPerBatch += ingredient.nutritionQuantity;
-    else if (ingredient.metricUnit === 'g' || ingredient.metricUnit === 'ml') {
-      massGramsPerBatch += ingredient.metricQuantity;
-    }
 
     return {
       ingredient,
@@ -156,7 +187,7 @@ export function calculateRecipe(
   return {
     rows,
     servings: servingsPerBatch * batches,
-    massGrams: massGramsPerBatch * batches,
+    massGrams: batchMassGrams(ingredients) * batches,
     caloriesPerBatch,
     caloriesPerServing: caloriesPerBatch / servingsPerBatch,
     macrosPerBatch,
@@ -181,8 +212,8 @@ export function calculateShoppingList(
     for (const ingredient of recipe.ingredients) {
       const product = productFor(ingredient, recipe.alternativeControls, alternatives);
       const quantity = ingredient.costQuantity * batches;
-      const key = `${product.id}:${product.name}:${product.packageUnit}`;
-      usedTotal += (quantity * product.priceAud) / product.packageQuantity;
+      const key = productKey(product);
+      usedTotal += usedCost(product, quantity);
 
       const entry = combined.get(key) ?? {
         product,
@@ -205,10 +236,9 @@ export function calculateShoppingList(
   const rows = Array.from(combined.values())
     .sort((left, right) => left.product.name.localeCompare(right.product.name))
     .map((entry): ShoppingRow => {
-      const packageCount = Math.ceil(entry.quantity / entry.product.packageQuantity);
-      const basketCost = packageCount * entry.product.priceAud;
-      basketTotal += basketCost;
-      return { ...entry, packageCount, basketCost };
+      const basket = basketFor(entry.product, entry.quantity);
+      basketTotal += basket.cost;
+      return { ...entry, packageCount: basket.packageCount, basketCost: basket.cost };
     });
 
   return { rows, usedTotal, basketTotal };
