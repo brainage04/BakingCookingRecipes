@@ -326,7 +326,7 @@ export const ingredients: IngredientChoice[] = [
         kcalPer100g: 288,
         macrosPer100g: null,
         nutritionNote:
-          '10mL is counted as 8.4g using USDA FoodData Central vanilla extract (FDC 173471: 4.2g per teaspoon, 288 kcal per 100g); macros remain unavailable.',
+          '10mL is counted as 8.4g using USDA FoodData Central vanilla extract (FDC 173471: 4.2g per teaspoon, 288 kcal per 100g). Macros remain unavailable.',
       },
     },
   },
