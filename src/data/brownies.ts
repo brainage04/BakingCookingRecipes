@@ -39,7 +39,7 @@ export const sourceInstructions = [
 ] as const;
 
 const woolworthsSearchSource =
-  'Woolworths online search result observed for the selected shopping target; final in-store pricing can differ until the store is selected in Woolworths.';
+  'Woolworths online search result observed for the selected shopping target. Final in-store pricing can differ until the store is selected in Woolworths.';
 const woolworthsProductSource =
   'Woolworths product page for identity/nutrition plus Woolworths search result for current price.';
 

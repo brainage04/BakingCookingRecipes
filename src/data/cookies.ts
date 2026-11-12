@@ -8,7 +8,7 @@ export const recipeMeta = {
   prepTime: '15 minutes',
   cookTime: '16 minutes',
   totalTime: '2 hours 51 minutes, including 20 minutes cooling/resting',
-  chillTime: 'At least 2 hours, up to 3 days; Sally recommends overnight.',
+  chillTime: 'At least 2 hours, up to 3 days. Sally recommends overnight.',
   cookiesPerBatch: 16,
   doughBallGrams: 50,
   sourceDoughBallNote:
@@ -36,13 +36,13 @@ export const sourceInstructions = [
   'Cover the dough tightly and refrigerate for 12–24 hours.',
   'Preheat oven to 150°C fan-forced. Line large baking sheets with parchment paper or silicone baking mats. Leave the chilled dough out at room temperature for 2–4 hours before preparing.',
   'Roll the dough into 50g balls, then shape each ball taller rather than wide, almost like a cylinder. Arrange cookies 3 inches apart.',
-  'Bake at 150°C fan-forced for 16 minutes; this worked well in the latest test. If using two trays, swap their oven positions halfway through baking.',
-  'After removing the cookies from the oven, slide each sheet of baking paper off the hot trays and onto the kitchen counter. Lightly cover the cookies with kitchen towels and let them cool/rest for 20 minutes before eating or storing; optional: press extra chocolate chips into the tops while warm.',
+  'Bake at 150°C fan-forced for 16 minutes. This worked well in the latest test. If using two trays, swap their oven positions halfway through baking.',
+  'After removing the cookies from the oven, slide each sheet of baking paper off the hot trays and onto the kitchen counter. Lightly cover the cookies with kitchen towels and let them cool/rest for 20 minutes before eating or storing. Optionally, press extra chocolate chips into the tops while warm.',
   'Store tightly covered at room temperature for up to 1 week. Fridge storage is also fine.',
 ] as const;
 
 const woolworthsSearchSource =
-  'Woolworths online search result observed for the selected shopping target; final in-store pricing can differ until the store is selected in Woolworths.';
+  'Woolworths online search result observed for the selected shopping target. Final in-store pricing can differ until the store is selected in Woolworths.';
 const woolworthsProductSource =
   'Woolworths product page for identity/nutrition plus Woolworths search result for current price.';
 
@@ -116,7 +116,7 @@ export const ingredients: IngredientChoice[] = [
         source: woolworthsProductSource,
         kcalPer100g: 0,
         macrosPer100g: { protein: 0, carbohydrates: 0, fat: 0 },
-        nutritionNote: 'Leavening agent; calories treated as zero.',
+        nutritionNote: 'Leavening agent, calories treated as zero.',
       },
     },
   },
