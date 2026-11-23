@@ -1,29 +1,3 @@
-/*
- * The shell sizes the header, main and footer with three different gutters and gives the footer 2rem more width,
- * so the footer sits 16px outside the content column and the phone header 24px outside it. One column and one
- * gutter for all three. The shell's own rules carry Astro scope attributes, which outrank a plain selector, so
- * the header's width needs !important. Remove this block when the shell ships the same fix.
- */
-html:root {
-  --site-column-width: 70rem;
-  --site-gutter: 1.5rem;
-  --site-main-width: var(--site-column-width);
-  --site-nav-width: var(--site-column-width);
-  --site-footer-width: var(--site-column-width);
-}
-
-body main {
-  width: min(100% - 2 * var(--site-gutter), var(--site-main-width));
-}
-
-header.site-header .header-bar {
-  width: min(100% - 2 * var(--site-gutter), var(--site-nav-width)) !important;
-}
-
-footer.site-footer .footer-inner {
-  width: min(100% - 2 * var(--site-gutter), var(--site-footer-width));
-}
-
 /* A stack already spaces its children, so the header's own margin would double the gap under it. */
 section.terminal-panel.stack > .panel-header {
   margin-block-end: 0;
