@@ -25,14 +25,8 @@ footer.site-footer .footer-inner {
   width: min(100% - 2 * var(--site-gutter), var(--site-footer-width));
 }
 
-/* A panel spaces its own children, so a header and the blocks under it share one gap. */
-section.terminal-panel {
-  display: grid;
-  gap: var(--panel-gap, 1.15rem);
-  align-content: start;
-}
-
-section.terminal-panel > .panel-header {
+/* A stack already spaces its children, so the header's own margin would double the gap under it. */
+section.terminal-panel.stack > .panel-header {
   margin-block-end: 0;
 }
 
