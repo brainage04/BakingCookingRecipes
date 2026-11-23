@@ -3,7 +3,9 @@ updates:
   - package-ecosystem: npm
     directory: /
     schedule:
-      interval: weekly
+      interval: daily
+    cooldown:
+      default-days: 3
     groups:
       npm-non-major:
         patterns:
@@ -15,10 +17,16 @@ updates:
       - dependency-name: typescript
         update-types:
           - version-update:semver-major
+      # A 0.x minor release of the shell can break a site, so the shell is bumped by hand.
+      - dependency-name: '@brainage04/astro-shell'
+        update-types:
+          - version-update:semver-minor
   - package-ecosystem: github-actions
     directory: /
     schedule:
-      interval: weekly
+      interval: daily
+    cooldown:
+      default-days: 3
     groups:
       github-actions-non-major:
         patterns:
@@ -26,3 +34,8 @@ updates:
         update-types:
           - minor
           - patch
+    ignore:
+      # The shell's reusable workflows move with the shell package, by hand.
+      - dependency-name: brainage04/AstroShell
+        update-types:
+          - version-update:semver-minor

@@ -39,7 +39,7 @@ export const sourceInstructions = [
 ] as const;
 
 const woolworthsSearchSource =
-  'Woolworths online search result observed for the selected shopping target; final in-store pricing can differ until the store is selected in Woolworths.';
+  'Woolworths online search result observed for the selected shopping target. Final in-store pricing can differ until the store is selected in Woolworths.';
 const woolworthsProductSource =
   'Woolworths product page for identity/nutrition plus Woolworths search result for current price.';
 
@@ -250,7 +250,7 @@ export const ingredients: IngredientChoice[] = [
         kcalPer100g: 288,
         macrosPer100g: null,
         nutritionNote:
-          '10mL is counted as 8.4g using USDA FoodData Central vanilla extract (FDC 173471: 4.2g per teaspoon, 288 kcal per 100g); macros remain unavailable.',
+          '10mL is counted as 8.4g using USDA FoodData Central vanilla extract (FDC 173471: 4.2g per teaspoon, 288 kcal per 100g). Macros remain unavailable.',
       },
     },
   },

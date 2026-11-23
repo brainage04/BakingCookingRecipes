@@ -66,8 +66,8 @@ export const recipes = [
     servingSingular: 'cookie',
     servingPlural: 'cookies',
     massLabel: 'Estimated dough',
-    massDescription: `Dough estimate only; cookie count is fixed at ${cookieData.recipeMeta.cookiesPerBatch} per batch.`,
-    unavailableNutritionNote: 'Vanilla calories use a USDA estimate; vanilla macros are unavailable.',
+    massDescription: `Dough estimate only. The cookie count is fixed at ${cookieData.recipeMeta.cookiesPerBatch} per batch.`,
+    unavailableNutritionNote: 'Vanilla calories use a USDA estimate. Vanilla macros are unavailable.',
     alternativeControls: standardAlternativeControls,
   },
   {
@@ -85,9 +85,9 @@ export const recipes = [
     servingSingular: 'brownie',
     servingPlural: 'brownies',
     massLabel: 'Estimated batter',
-    massDescription: `Batter estimate only; brownie count is fixed at ${brownieData.recipeMeta.servingsPerBatch} per batch.`,
+    massDescription: `Batter estimate only. The brownie count is fixed at ${brownieData.recipeMeta.servingsPerBatch} per batch.`,
     unavailableNutritionNote:
-      'Vanilla calories use a USDA estimate; vanilla macros are unavailable. Optional chocolate chunks are included.',
+      'Vanilla calories use a USDA estimate. Vanilla macros are unavailable. Optional chocolate chunks are included.',
     alternativeControls: standardAlternativeControls,
   },
 ] as const satisfies readonly RecipePageData[];
