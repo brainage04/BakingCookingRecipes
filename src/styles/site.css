@@ -18,7 +18,6 @@ body main {
 
 header.site-header .header-bar {
   width: min(100% - 2 * var(--site-gutter), var(--site-nav-width)) !important;
-  padding-block: 0.75rem;
 }
 
 footer.site-footer .footer-inner {
