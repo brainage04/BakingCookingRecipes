@@ -1,23 +1,15 @@
 import type { SiteConfig } from '@brainage04/astro-shell/config';
 import { recipes } from './data/recipes';
 
-// Shell releases after 0.7.0 keep pinned links in the bar and move the rest into the menu drawer. Shell 0.7.0 does not know
-// the flag and ignores it, and its NavItem type rejects the property on a literal, so it is added through this helper.
-const pinned = <T extends object>(item: T) => ({ ...item, pinned: true as const });
-
-// Also unreleased: `drawerTitle: false` leaves the site name out of the menu drawer, where it is clipped. Shell 0.7.0
-// ignores it, and spreading keeps its SiteConfig type from rejecting the unknown property.
-const unreleasedShellOptions = { drawerTitle: false };
-
 export const siteConfig = {
-  ...unreleasedShellOptions,
   siteName: 'BakingCookingRecipes',
+  drawerTitle: false,
   description: 'Recipe batch scalers, Woolworths cost calculators, substitutions, and bake notes.',
   navItems: [
-    pinned({ name: 'Home', href: '/' }),
+    { name: 'Home', href: '/', pinned: true },
     ...recipes.map((recipe) => ({ name: recipe.navTitle, href: `/${recipe.slug}/` })),
-    pinned({ name: 'Shopping list', href: '/shopping-list/' }),
-    pinned({ name: 'Main site', href: 'https://brainage04.github.io/', external: true }),
+    { name: 'Shopping list', href: '/shopping-list/', pinned: true },
+    { name: 'Main site', href: 'https://brainage04.github.io/', external: true, pinned: true },
   ],
   sourceHref: 'https://github.com/brainage04/BakingCookingRecipes',
   faviconHref: '/pfp.webp',
