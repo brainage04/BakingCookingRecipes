@@ -53,7 +53,6 @@ export interface AmountOption extends OptionBase {
   defaultValue: number;
   min: number;
   max?: number;
-  step: number;
 }
 
 export type RecipeOption = ToggleOption | ChoiceOption | AmountOption;

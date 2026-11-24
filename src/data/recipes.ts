@@ -198,7 +198,7 @@ export const recipes: readonly RecipePageData[] = [
     servingSingular: 'serve',
     servingPlural: 'serves',
     massLabel: 'Raw weight',
-    massDescription: `The serve count is ${bologneseData.servesPerBatch}, a placeholder. Weight is raw mince and bacon, the jar and dry pasta.`,
+    massDescription: `The serve count is ${bologneseData.servesPerBatch}, a placeholder. Weight is raw mince and bacon, the jar and any dry pasta added.`,
     unavailableNutritionNote: 'Mince and bacon are counted raw.',
     alternativeControls: [],
     options: bologneseData.options,

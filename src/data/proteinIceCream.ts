@@ -41,7 +41,6 @@ export const options: readonly RecipeOption[] = [
     unit: 'tbsp',
     defaultValue: 2,
     min: 0,
-    step: 0.5,
     hint: '2 tbsp by default, 3 is too strong. 0 leaves it out.',
   },
   {
@@ -100,6 +99,9 @@ export const sourceNotes = [
   'Freezing time: Ninja Australia says at least 24 hours (https://ninjakitchenapac.zendesk.com/hc/en-au/articles/15978391315471-NC701-Ninja-Swirl-by-CREAMi-FAQ). In practice 12 hours is the minimum, 16 hours or more is ideal, and past 16 hours the gains are small.',
   "The base is Lee Lem's Vanilla Soft Serve (300mL milk, 30g Muscle Nation vanilla ice cream whey isolate, 10g instant pudding mix) and Custard Base (300mL skim milk, 40g Muscle Nation Custard Protein, sweetener), from the first video above. Lee says the Custard Base needs no xanthan gum or pudding mix as a thickener.",
   "PB2 is an addition to Lee's recipes. 3 tbsp was too strong, so 2 tbsp is the default.",
+  'Ninja Australia says not to re-spin if you are also using the Mix-In program, so re-spin first and only then add mix-ins (same FAQ).',
+  'The Lite Ice Cream program is the one Ninja names for recipes made with sugar substitutes (same FAQ).',
+  'The same FAQ suggests 1 tbsp of any instant pudding mix in place of xanthan gum.',
   'Xanthan gum: 1/8 to 1/4 tsp per 16 oz (473mL) pint is the typical dose (https://scoopandchurn.com/blog/ninja-creami-stabilizers). 1/4 tsp is used here, about 0.75g.',
   "Overripe banana (150g mashed, from Lee's banana version in the second video) was tried and was kind of mid, so it is off by default.",
   'The 23 November version had 3 tbsp PB2 and 10g of pudding mix in both the Custard and the Vanilla. The older notes had the PB2 optional (or 150g of mashed strawberries in its place) and the pudding mix in the Vanilla only.',
@@ -123,7 +125,7 @@ export const ingredients: IngredientChoice[] = [
   mealIngredient({
     key: 'pudding',
     label: "Cottee's instant vanilla pudding mix",
-    sourceAmount: '10g',
+    sourceAmount: '10g (about 2 tsp)',
     quantity: 10,
     product: cotteesVanillaPudding,
     when: { option: 'thickener', equals: 'pudding' },

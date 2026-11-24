@@ -186,7 +186,7 @@ export const banana = product({
   protein: 1.4,
   carbohydrates: 19.9,
   fat: 0.2,
-  per: `${per100g} of peeled raw banana, from the Australian Food Composition Database (https://totality360.com.au/foods/banana-cavendish.html), because the Woolworths page has no panel`,
+  per: `${per100g} of peeled raw banana, from the totality360.com.au page for Cavendish banana (https://totality360.com.au/foods/banana-cavendish.html), which lists values from the Australian Food Composition Database, because the Woolworths page has no panel`,
   note: 'The price is per banana; about 150g of mashed banana is taken as one banana.',
 });
 

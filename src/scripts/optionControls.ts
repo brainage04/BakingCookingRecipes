@@ -27,6 +27,9 @@ export function bindOptionControls(
   const state: Record<string, OptionValue> = { ...optionDefaults(options) } as Record<string, OptionValue>;
   const controls = root.querySelectorAll<HTMLInputElement | HTMLSelectElement>('[data-option-key]');
   for (const control of controls) {
+    // A browser may restore form values on reload or Back, so the controls are the source of truth.
+    const restored = readValue(control);
+    if (control.dataset.optionKey && restored !== undefined) state[control.dataset.optionKey] = restored;
     const handler = () => {
       const key = control.dataset.optionKey;
       const value = readValue(control);

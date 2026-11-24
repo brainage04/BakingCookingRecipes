@@ -169,8 +169,14 @@
   accent-color: var(--accent-secondary);
 }
 
+.option-field .field {
+  min-inline-size: 0;
+}
+
 .option-field select {
+  inline-size: 100%;
   max-inline-size: 100%;
+  min-inline-size: 0;
 }
 
 .batch-card {
@@ -276,9 +282,15 @@ ol li + li {
   margin-block-start: 1rem;
 }
 
-/* Bullet lists in recipe panels (ingredients and notes) get about one blank line between items. */
-.terminal-panel > ul > li + li {
+/* The Notes bullets get about one blank line between items. */
+.recipe-notes > ul > li + li {
   margin-block-start: 1.5rem;
+}
+
+/* Bare URLs in notes and the source line are longer than a phone's width. */
+.recipe-notes a,
+.recipe-source a {
+  overflow-wrap: anywhere;
 }
 
 .shopping-breakdown {

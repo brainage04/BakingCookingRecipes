@@ -17,10 +17,9 @@ export const options: readonly RecipeOption[] = [
     unit: 'mL',
     defaultValue: 600,
     min: 0,
-    step: 50,
     hint: 'More milk and less water keeps it from tasting diluted.',
   },
-  { kind: 'amount', key: 'coffeeTsp', label: 'Instant coffee', unit: 'tsp', defaultValue: 3, min: 0, step: 0.5 },
+  { kind: 'amount', key: 'coffeeTsp', label: 'Instant coffee', unit: 'tsp', defaultValue: 3, min: 0 },
   {
     kind: 'amount',
     key: 'steviaTsp',
@@ -28,7 +27,6 @@ export const options: readonly RecipeOption[] = [
     unit: 'tsp',
     defaultValue: 3,
     min: 0,
-    step: 0.5,
     hint: '1 tbsp (3 tsp) is still a bit much for some, 2 tbsp was far too sweet.',
   },
 ];

@@ -46,7 +46,7 @@ const alternativeControls = Array.from(
                 </label>
                 {recipe.options.length > 0 && (
                   <details class="recipe-options">
-                    <summary>Options</summary>
+                    <summary>{recipe.title} options</summary>
                     <div class="option-list">
                       <OptionControls options={recipe.options} prefix={`shopping-${recipe.slug}`} />
                     </div>

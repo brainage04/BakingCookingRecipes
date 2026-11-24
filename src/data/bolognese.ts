@@ -22,8 +22,6 @@ export const recipeMeta = {
 
 /** Placeholder: Thomas has not said how many serves the batch makes. */
 export const servesPerBatch = 6;
-/** Placeholder: Thomas has not said how much pasta a serve takes. */
-export const pastaGramsPerServe = 80;
 
 export const options: readonly RecipeOption[] = [
   {
@@ -54,12 +52,11 @@ export const options: readonly RecipeOption[] = [
   {
     kind: 'amount',
     key: 'pastaGrams',
-    label: 'Dry spaghetti per serve (placeholder)',
+    label: 'Dry spaghetti per serve',
     unit: 'g',
-    defaultValue: pastaGramsPerServe,
+    defaultValue: 0,
     min: 0,
-    step: 10,
-    hint: `Placeholder until the real amount is set. The batch is ${servesPerBatch} serves, also a placeholder. 0 leaves the pasta out.`,
+    hint: `Left out by default because the amount is not known. The batch is ${servesPerBatch} serves, also a placeholder. Enter grams per serve to add it.`,
   },
 ];
 
@@ -67,13 +64,13 @@ export const sourceIngredients = [
   '1kg beef mince, extra lean (5% fat) or lean (10% fat)',
   '500g Don shortcut bacon (half a 1kg pack)',
   '1 jar (500g) Dolmio pasta sauce, usually Tomato, Onion and Roasted Garlic',
-  `Dry spaghetti, ${pastaGramsPerServe}g a serve (placeholder)`,
+  'Dry spaghetti, optional (amount per serve not set)',
 ] as const;
 
 export const sourceInstructions = [] as const;
 
 export const sourceNotes = [
-  `The batch is ${servesPerBatch} serves and the pasta is ${pastaGramsPerServe}g of dry spaghetti a serve. Both are placeholders until Thomas sets them.`,
+  `The batch is ${servesPerBatch} serves, a placeholder until Thomas sets it. The pasta is left out until a dry spaghetti amount per serve is entered.`,
   'The usual jar is Dolmio Extra Tomato, Onion and Roast Garlic. The other four 500g jars are in the sauce list.',
   'The Woolworths listings for Dolmio Traditional Recipe Classic Tomato and Extra Tomato, Onion and Garlic Salt Reduced had no price on 24 November, so they show $0.00 until Woolworths has a price.',
   'Mince and bacon are counted raw, so fat that stays in the pan is not taken off.',
@@ -132,8 +129,8 @@ export const ingredients: IngredientChoice[] = [
   ),
   mealIngredient({
     key: 'spaghetti',
-    label: 'Dry spaghetti (placeholder amount)',
-    sourceAmount: `${pastaGramsPerServe}g a serve, ${servesPerBatch} serves`,
+    label: 'Dry spaghetti',
+    sourceAmount: `Per serve amount, ${servesPerBatch} serves`,
     quantity: servesPerBatch,
     product: spaghetti,
     perUnitOf: 'pastaGrams',
