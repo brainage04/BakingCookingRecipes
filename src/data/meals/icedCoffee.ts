@@ -28,6 +28,6 @@ export const icedCoffee: MealRecipe = {
     'Add the milk.',
     'Add ice and/or cold water up to 750mL.',
   ],
-  notes: ["Roughly 140 to 210mg of caffeine from 4 to 6g of instant coffee (Thomas's own estimate)."],
+  notes: ['Roughly 140 to 210mg of caffeine from 4 to 6g of instant coffee (from the original notes).'],
   sourceNotes: ['Ice and water are counted as zero energy and zero macros.'],
 };

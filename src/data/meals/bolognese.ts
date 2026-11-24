@@ -21,11 +21,12 @@ const minces: readonly { key: string; title: string; product: MealProduct }[] = 
   { key: 'lean', title: 'lean mince (10% fat)', product: beefMinceLean },
 ];
 
-const sauces: readonly { key: string; title: string; product: MealProduct }[] = [
+const sauces: readonly { key: string; title: string; product: MealProduct; usual?: boolean }[] = [
   {
     key: 'tomato-onion-roast-garlic',
     title: 'Dolmio Tomato, Onion and Roast Garlic',
     product: dolmioExtraTomatoOnionRoastGarlic,
+    usual: true,
   },
   { key: 'extra-bolognese', title: 'Dolmio Extra Bolognese', product: dolmioExtraBolognese },
   { key: 'classic-tomato-basil', title: 'Dolmio Classic Tomato with Basil', product: dolmioClassicTomatoBasil },
@@ -59,10 +60,16 @@ const pastaExtra = {
 const variants: MealVariant[] = minces.flatMap((mince) =>
   sauces.map((sauce) => ({
     key: `${mince.key}-${sauce.key}`,
-    title: `${mince.title} with ${sauce.title}`,
+    title: `${mince.title} with ${sauce.title}${sauce.usual ? ' (usual jar)' : ''}`,
     ingredients: [
       ingredient('Beef mince', '1kg', 1000, mince.product),
-      ingredient('Dolmio pasta sauce', '1 jar (500g)', 500, sauce.product),
+      ingredient(
+        'Dolmio pasta sauce',
+        '1 jar (500g)',
+        500,
+        sauce.product,
+        sauce.usual ? { note: "Thomas's usual jar" } : {},
+      ),
     ],
     extras: [pastaExtra],
   })),

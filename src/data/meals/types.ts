@@ -25,10 +25,14 @@ export interface MealIngredient {
   /** Marks an amount Thomas has not fixed yet. The page shows it as a placeholder. */
   placeholder?: boolean;
   assumption?: string;
+  /** A remark shown under the amount, such as which choice is the usual one. */
+  note?: string;
 }
 
 export interface MealExtra {
   label: string;
+  /** Product keys of shared ingredients this addition takes the place of. */
+  replaces?: readonly string[];
   ingredients: readonly MealIngredient[];
 }
 

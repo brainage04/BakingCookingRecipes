@@ -39,7 +39,8 @@ export function scaleNutrition(nutrition: Nutrition, factor: number): Nutrition 
 }
 
 export function variantBatch(recipe: MealRecipe, variant: MealVariant, extra?: MealExtra): Nutrition {
-  const ingredients = [...recipe.shared, ...variant.ingredients, ...(extra?.ingredients ?? [])];
+  const shared = recipe.shared.filter((item) => !extra?.replaces?.includes(item.product.key));
+  const ingredients = [...shared, ...variant.ingredients, ...(extra?.ingredients ?? [])];
   return sumNutrition(ingredients);
 }
 

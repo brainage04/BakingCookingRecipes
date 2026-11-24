@@ -42,7 +42,25 @@ describe('protein ice cream', () => {
   it('matches the panel arithmetic for the Vanilla tub and its strawberry option', () => {
     expect(batchOf(proteinIceCream, 'vanilla').kcal).toBeCloseTo(347.5, 0);
     expect(batchOf(proteinIceCream, 'vanilla').protein).toBeCloseTo(41.3, 1);
-    expect(batchOf(proteinIceCream, 'vanilla', 0).kcal).toBeCloseTo(386.2, 0);
+    expect(batchOf(proteinIceCream, 'vanilla', 0).kcal).toBeCloseTo(304.2, 0);
+    expect(batchOf(proteinIceCream, 'vanilla', 0).protein).toBeCloseTo(33.8, 1);
+  });
+
+  it('takes the strawberries as a replacement for the PB2, not an addition', () => {
+    const custard = batchOf(proteinIceCream, 'custard');
+    const withStrawberries = batchOf(proteinIceCream, 'custard', 0);
+    expect(withStrawberries.kcal).toBeCloseTo(331.2, 0);
+    expect(withStrawberries.protein).toBeCloseTo(36.3, 1);
+    expect(withStrawberries.kcal).toBeLessThan(custard.kcal);
+  });
+
+  it('writes the pudding amount with its spoon size', () => {
+    const pudding = proteinIceCream.shared.find((item) => item.product.key === 'cotteesVanillaPudding');
+    expect(pudding?.amountText).toBe('10g (about 2 tsp)');
+  });
+
+  it('keeps the Scoop step before Lite Ice Cream', () => {
+    expect(proteinIceCream.method).toContain('Select Scoop, then Lite Ice Cream.');
   });
 });
 
@@ -90,6 +108,12 @@ describe('spaghetti bolognese', () => {
     const sauceOnly = batchOf(bolognese, 'extra-lean-tomato-onion-roast-garlic');
     expect(sauceOnly.kcal).toBeCloseTo(2387.7, 0);
     expect(sauceOnly.protein).toBeCloseTo(299, 0);
+  });
+
+  it('marks the Tomato, Onion and Roast Garlic jar as the usual one', () => {
+    const usual = bolognese.variants.filter((variant) => variant.title.includes('(usual jar)'));
+    expect(usual).toHaveLength(2);
+    expect(usual.every((variant) => variant.ingredients.some((item) => item.product.id === '758342'))).toBe(true);
   });
 
   it('offers both mince grades and all five Dolmio jars', () => {

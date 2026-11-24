@@ -28,7 +28,7 @@ export const proteinIceCream: MealRecipe = {
     ingredient('Skim milk', '300mL', 300, skimMilk),
     ingredient('Stevia sweetener', '1 tbsp', 16, stevia, { assumption: steviaTablespoonAssumption }),
     ingredient('PB2 powdered peanut butter', '3 tbsp', 19.5, pb2, { assumption: pb2TablespoonAssumption }),
-    ingredient("Cottee's instant vanilla pudding mix", '10g', 10, cotteesVanillaPudding),
+    ingredient("Cottee's instant vanilla pudding mix", '10g (about 2 tsp)', 10, cotteesVanillaPudding),
   ],
   variants: [
     {
@@ -37,7 +37,8 @@ export const proteinIceCream: MealRecipe = {
       ingredients: [ingredient('Muscle Nation Custard Casein', '2 scoops (40g)', 40, custardCasein)],
       extras: [
         {
-          label: '150g mashed strawberries (untried)',
+          label: '150g mashed strawberries instead of the PB2 (untried)',
+          replaces: [pb2.key],
           ingredients: [ingredient('Strawberries', '150g', 150, strawberries)],
         },
       ],
@@ -50,7 +51,8 @@ export const proteinIceCream: MealRecipe = {
       ],
       extras: [
         {
-          label: '150g mashed strawberries (untried)',
+          label: '150g mashed strawberries instead of the PB2 (untried)',
+          replaces: [pb2.key],
           ingredients: [ingredient('Strawberries', '150g', 150, strawberries)],
         },
       ],
@@ -60,9 +62,9 @@ export const proteinIceCream: MealRecipe = {
   servingLabel: 'half tub',
   batchLabel: 'whole tub',
   method: [
-    'Put the milk, stevia, PB2, pudding mix and protein powder in an NC701 tub. Add water up to the MAX FILL line.',
+    'Put the milk, stevia, PB2 (or 150g of mashed strawberries instead), pudding mix and protein powder in an NC701 tub. Add water up to the MAX FILL line.',
     'Freeze the tub upright and level. Minimum 8 hours, best 16 hours or more.',
-    'Process the frozen tub on the Lite Ice Cream program.',
+    'Select Scoop, then Lite Ice Cream.',
     'Re-spin only if it comes out crumbly or powdery: add 1 to 2 tbsp of milk and press Re-spin. The manual says very cold bases often need it.',
     'Mix-ins (optional): dig a hole down the middle, add the pieces and press Mix-In.',
   ],
@@ -73,6 +75,8 @@ export const proteinIceCream: MealRecipe = {
     'The same FAQ suggests 1 tbsp of any instant pudding mix in place of xanthan gum.',
   ],
   sourceNotes: [
+    'This is the 23 November version: 3 tbsp PB2 and 10g of pudding mix go in both. The older notes had the PB2 optional (or 150g of mashed strawberries in its place) and the pudding mix in the Vanilla only.',
+    'The older notes estimated Custard at about 250 kcal and 48g protein, Vanilla at about 255 kcal and 33g, and about 337 kcal and 44g with PB2. The label figures above differ: by the panels Custard without PB2 is 35g protein, and 3 tbsp of PB2 adds 8.6g protein, not 11g.',
     'Water added up to the MAX FILL line is counted as zero energy and zero macros.',
     'The Muscle Nation Custard Casein panel is the Woolworths Vanilla flavour. Other flavours have their own panels.',
   ],

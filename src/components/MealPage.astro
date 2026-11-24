@@ -103,7 +103,7 @@ const columns = ['Ingredient', 'Amount', 'Product', 'Nutrition panel'] as const;
 
     {
       [
-        { title: 'Ingredients in every version', rows: recipe.shared },
+        { title: recipe.variants.length > 1 ? 'Ingredients in every version' : 'Ingredients', rows: recipe.shared },
         { title: recipe.variants.length > 1 ? 'Choose' : 'Ingredients', rows: options },
         { title: 'Optional additions', rows: extras },
       ]
@@ -127,6 +127,7 @@ const columns = ['Ingredient', 'Amount', 'Product', 'Nutrition panel'] as const;
                         {row.amountText}
                         {row.placeholder && <strong> (placeholder)</strong>}
                         {row.assumption && <div class="muted">{row.assumption}</div>}
+                        {row.note && <div class="muted">{row.note}</div>}
                       </td>
                       <td data-label="Product">
                         <a href={row.product.url} target="_blank" rel="noreferrer">

@@ -3,6 +3,7 @@ import type { MealIngredient, MealProduct } from './types';
 interface IngredientOptions {
   placeholder?: boolean;
   assumption?: string;
+  note?: string;
 }
 
 export function ingredient(
