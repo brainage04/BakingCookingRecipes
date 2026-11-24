@@ -7,6 +7,7 @@ export const siteConfig = {
   navItems: [
     { name: 'Home', href: '/' },
     ...recipes.map((recipe) => ({ name: recipe.navTitle, href: `/${recipe.slug}/` })),
+    { name: 'Meals', href: '/meals/' },
     { name: 'Shopping list', href: '/shopping-list/' },
     { name: 'Main site', href: 'https://brainage04.github.io/', external: true },
   ],

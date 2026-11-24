@@ -1,0 +1,15 @@
+---
+import MealPage from '../../components/MealPage.astro';
+import { meals } from '../../data/meals';
+
+export function getStaticPaths() {
+  return meals.map((recipe) => ({
+    params: { slug: recipe.slug },
+    props: { recipe },
+  }));
+}
+
+const { recipe } = Astro.props;
+---
+
+<MealPage recipe={recipe} />

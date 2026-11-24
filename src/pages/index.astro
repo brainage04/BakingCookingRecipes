@@ -4,9 +4,12 @@ import { withBase } from '@brainage04/astro-shell/withBase';
 import { recipes } from '../data/recipes';
 
 const shoppingHref = withBase('/shopping-list/');
+const mealsHref = withBase('/meals/');
 ---
 
-<SiteLayout description="Recipe calculators for cookies and brownies with Woolworths cost estimates and bake notes.">
+<SiteLayout
+  description="Recipe calculators for cookies and brownies with Woolworths cost estimates, plus meals with calories and macros."
+>
   <div class="recipes-home">
     <h1 class="sr-only">BakingCookingRecipes</h1>
 
@@ -21,6 +24,16 @@ const shoppingHref = withBase('/shopping-list/');
             </a>
           ))
         }
+      </div>
+    </section>
+
+    <section class="home-section" aria-labelledby="meals-title">
+      <h2 id="meals-title">Meals</h2>
+      <div class="recipe-grid">
+        <a class="recipe-card shopping-card" href={mealsHref}>
+          <h3>Protein ice cream, iced coffee, butter chicken and bolognese</h3>
+          <span>Open meals with calories and macros</span>
+        </a>
       </div>
     </section>
 

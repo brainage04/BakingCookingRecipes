@@ -1,0 +1,183 @@
+---
+import SiteLayout from '@brainage04/astro-shell/components/SiteLayout.astro';
+import TerminalPanel from '@brainage04/astro-shell/components/TerminalPanel.astro';
+import type { MealIngredient, MealRecipe } from '../data/meals/types';
+import { formatGrams, formatKcal, perServing, variantBatch } from '../lib/mealNutrition';
+
+export interface Props {
+  recipe: MealRecipe;
+}
+
+const { recipe } = Astro.props;
+
+const nutritionRows = recipe.variants.flatMap((variant) => [
+  { label: variant.title, batch: variantBatch(recipe, variant) },
+  ...(variant.extras ?? []).map((extra) => ({
+    label: `${variant.title}, plus ${extra.label}`,
+    batch: variantBatch(recipe, variant, extra),
+  })),
+]);
+
+function uniqueIngredients(ingredients: readonly MealIngredient[]): MealIngredient[] {
+  const seen = new Map<string, MealIngredient>();
+  for (const ingredient of ingredients) {
+    seen.set(`${ingredient.product.key}|${ingredient.amountText}`, ingredient);
+  }
+  return [...seen.values()];
+}
+
+const options = uniqueIngredients(recipe.variants.flatMap((variant) => variant.ingredients));
+const extras = uniqueIngredients(
+  recipe.variants.flatMap((variant) => (variant.extras ?? []).flatMap((extra) => extra.ingredients)),
+);
+const servesSentence =
+  recipe.servings === 1
+    ? `Per ${recipe.servingLabel}, the whole recipe. Energy is the panel's kilojoules divided by 4.184.`
+    : `Per ${recipe.servingLabel} and for the ${recipe.batchLabel}. A batch makes ${recipe.servings} serves. Energy is the panel's kilojoules divided by 4.184.`;
+
+/** Splits a note into plain text and links so bare URLs become anchors. */
+function noteParts(note: string): { text: string; href?: string }[] {
+  return note
+    .split(/(https?:\/\/[^\s]*[^\s.,;:)])/)
+    .filter((part) => part !== '')
+    .map((part) => (part.startsWith('http') ? { text: part, href: part } : { text: part }));
+}
+
+const columns = ['Ingredient', 'Amount', 'Product', 'Nutrition panel'] as const;
+---
+
+<SiteLayout title={recipe.pageTitle} description={recipe.description}>
+  <div class="site-stack">
+    <p class="recipe-source">{recipe.intro}</p>
+
+    <TerminalPanel title="Nutrition" class="stack" id="nutrition">
+      <p class="muted">
+        {servesSentence}
+      </p>
+      <div
+        class="table-wrap table-wrap--stack"
+        role="region"
+        aria-label="Nutrition per serve and per batch"
+        tabindex="0"
+      >
+        <table class="meal-table">
+          <thead>
+            <tr>
+              <th scope="col">Version</th>
+              <th scope="col">kcal / serve</th>
+              <th scope="col">Protein / serve</th>
+              <th scope="col">Carbs / serve</th>
+              <th scope="col">Fat / serve</th>
+              <th scope="col">kcal / batch</th>
+              <th scope="col">Protein / batch</th>
+              <th scope="col">Carbs / batch</th>
+              <th scope="col">Fat / batch</th>
+            </tr>
+          </thead>
+          <tbody>
+            {
+              nutritionRows.map(({ label, batch }) => {
+                const serve = perServing(batch, recipe.servings);
+                return (
+                  <tr>
+                    <td data-label="Version">{label}</td>
+                    <td data-label="kcal / serve">{formatKcal(serve.kcal)}</td>
+                    <td data-label="Protein / serve">{formatGrams(serve.protein)}</td>
+                    <td data-label="Carbs / serve">{formatGrams(serve.carbohydrate)}</td>
+                    <td data-label="Fat / serve">{formatGrams(serve.fat)}</td>
+                    <td data-label="kcal / batch">{formatKcal(batch.kcal)}</td>
+                    <td data-label="Protein / batch">{formatGrams(batch.protein)}</td>
+                    <td data-label="Carbs / batch">{formatGrams(batch.carbohydrate)}</td>
+                    <td data-label="Fat / batch">{formatGrams(batch.fat)}</td>
+                  </tr>
+                );
+              })
+            }
+          </tbody>
+        </table>
+      </div>
+      <ul>
+        {recipe.sourceNotes.map((note) => <li>{note}</li>)}
+      </ul>
+    </TerminalPanel>
+
+    {
+      [
+        { title: 'Ingredients in every version', rows: recipe.shared },
+        { title: recipe.variants.length > 1 ? 'Choose' : 'Ingredients', rows: options },
+        { title: 'Optional additions', rows: extras },
+      ]
+        .filter((group) => group.rows.length > 0)
+        .map((group) => (
+          <TerminalPanel title={group.title}>
+            <div class="table-wrap table-wrap--stack" role="region" aria-label={group.title} tabindex="0">
+              <table class="meal-table">
+                <thead>
+                  <tr>
+                    {columns.map((column) => (
+                      <th scope="col">{column}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {group.rows.map((row) => (
+                    <tr>
+                      <td data-label="Ingredient">{row.label}</td>
+                      <td data-label="Amount">
+                        {row.amountText}
+                        {row.placeholder && <strong> (placeholder)</strong>}
+                        {row.assumption && <div class="muted">{row.assumption}</div>}
+                      </td>
+                      <td data-label="Product">
+                        <a href={row.product.url} target="_blank" rel="noreferrer">
+                          {row.product.name}
+                          <span class="sr-only"> (opens in new tab)</span>
+                        </a>
+                        <div class="muted">product {row.product.id}</div>
+                      </td>
+                      <td data-label="Nutrition panel">
+                        {row.product.panel}
+                        {row.product.note && <div class="muted">{row.product.note}</div>}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </TerminalPanel>
+        ))
+    }
+
+    {
+      recipe.method.length > 0 && (
+        <TerminalPanel title="Method">
+          <ol>
+            {recipe.method.map((step) => (
+              <li>{step}</li>
+            ))}
+          </ol>
+        </TerminalPanel>
+      )
+    }
+
+    <TerminalPanel title="Notes">
+      <ul>
+        {
+          recipe.notes.map((note) => (
+            <li>
+              {noteParts(note).map((part) =>
+                part.href ? (
+                  <a href={part.href} target="_blank" rel="noreferrer">
+                    {part.text}
+                  </a>
+                ) : (
+                  part.text
+                ),
+              )}
+            </li>
+          ))
+        }
+      </ul>
+    </TerminalPanel>
+  </div>
+</SiteLayout>

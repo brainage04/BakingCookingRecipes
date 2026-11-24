@@ -16,6 +16,8 @@ npm run dev
 
 Recipe and product data live in `src/data`. Pure calculation logic lives in `src/lib/calculations.ts`.
 
+The meal pages (protein ice cream, iced coffee, butter chicken, bolognese) keep their recipes in `src/data/meals`. Every product there carries the panel line it was copied from and its Woolworths or maker URL, and `src/lib/mealNutrition.ts` turns the amounts into kcal, protein, carbohydrate and fat.
+
 ## Validation
 
 ```bash
