@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { recipes } from '../data/recipes';
-import type { OptionState, RecipePageData } from '../data/recipes';
+import type { RecipePageData } from '../data/recipes';
+import type { OptionState } from '../data/types';
 import { calculateRecipe, calculateShoppingList, optionDefaults, resolveIngredients } from './calculations';
 import { noteParts } from './noteParts';
 
