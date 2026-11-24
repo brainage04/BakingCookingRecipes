@@ -393,7 +393,9 @@ describe('recipe pages', () => {
     const recipe = recipeFor('protein-ice-cream');
     expect(recipe.sourceInstructions.some((step) => step.includes('select Scoop, then Lite Ice Cream'))).toBe(true);
     const notes = (recipe.notes ?? []).join('\n');
-    expect(notes).toContain('not to re-spin if you will also use the Mix-In program, because running both can over-process');
+    expect(notes).toContain(
+      'not to re-spin if you will also use the Mix-In program, because running both can over-process',
+    );
     expect(notes).toContain('Lite Ice Cream program is the one Ninja names for recipes made with sugar substitutes');
     expect(notes).toContain('1 tbsp of any instant pudding mix in place of xanthan gum');
   });
