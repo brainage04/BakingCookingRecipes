@@ -91,7 +91,7 @@ export const bolognese: MealRecipe = {
   batchLabel: 'whole batch',
   method: [],
   notes: [
-    'The default jar is Dolmio Extra Tomato, Onion and Roast Garlic. The other four 500g Dolmio jars are in the nutrition table as options.',
+    "Thomas's usual jar is Dolmio Extra Tomato, Onion and Roast Garlic. The other four 500g Dolmio jars are in the nutrition table as options.",
   ],
   sourceNotes: [
     'Mince and bacon are counted raw, so fat that stays in the pan is not taken off.',

@@ -13,7 +13,7 @@ const { recipe } = Astro.props;
 const nutritionRows = recipe.variants.flatMap((variant) => [
   { label: variant.title, batch: variantBatch(recipe, variant) },
   ...(variant.extras ?? []).map((extra) => ({
-    label: `${variant.title}, plus ${extra.label}`,
+    label: `${variant.title}, ${extra.replaces ? 'with' : 'plus'} ${extra.label}`,
     batch: variantBatch(recipe, variant, extra),
   })),
 ]);

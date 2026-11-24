@@ -76,7 +76,7 @@ export const proteinIceCream: MealRecipe = {
   ],
   sourceNotes: [
     'This is the 23 November version: 3 tbsp PB2 and 10g of pudding mix go in both. The older notes had the PB2 optional (or 150g of mashed strawberries in its place) and the pudding mix in the Vanilla only.',
-    'The older notes estimated Custard at about 250 kcal and 48g protein, Vanilla at about 255 kcal and 33g, and about 337 kcal and 44g with PB2. The label figures above differ: by the panels Custard without PB2 is 35g protein, and 3 tbsp of PB2 adds 8.6g protein, not 11g.',
+    'The older notes estimated Custard at about 250 kcal and 48g protein, Vanilla at about 255 kcal and 33g, and about 337 kcal and 44g with PB2. The panel figures above differ: by the panels Custard without PB2 is 35g protein, and 3 tbsp of PB2 adds 8.6g protein, not 11g.',
     'Water added up to the MAX FILL line is counted as zero energy and zero macros.',
     'The Muscle Nation Custard Casein panel is the Woolworths Vanilla flavour. Other flavours have their own panels.',
   ],
