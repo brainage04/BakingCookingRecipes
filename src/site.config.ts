@@ -5,7 +5,12 @@ import { recipes } from './data/recipes';
 // the flag and ignores it, and its NavItem type rejects the property on a literal, so it is added through this helper.
 const pinned = <T extends object>(item: T) => ({ ...item, pinned: true as const });
 
+// Also unreleased: `drawerTitle: false` leaves the site name out of the menu drawer, where it is clipped. Shell 0.7.0
+// ignores it, and spreading keeps its SiteConfig type from rejecting the unknown property.
+const unreleasedShellOptions = { drawerTitle: false };
+
 export const siteConfig = {
+  ...unreleasedShellOptions,
   siteName: 'BakingCookingRecipes',
   description: 'Recipe batch scalers, Woolworths cost calculators, substitutions, and bake notes.',
   navItems: [
