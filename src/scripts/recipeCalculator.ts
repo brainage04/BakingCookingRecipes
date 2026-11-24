@@ -1,17 +1,20 @@
 import type { AlternativeControl } from '../data/recipes';
-import type { IngredientChoice, MacroBreakdown, ProductChoice } from '../data/types';
+import type { IngredientChoice, MacroBreakdown, ProductChoice, RecipeOption } from '../data/types';
 import {
   calculateRecipe,
   formatQuantity,
   normalizeBatchInput,
+  resolveIngredients,
   type IngredientCalculation,
   type RecipeCalculation,
 } from '../lib/calculations';
+import { bindOptionControls } from './optionControls';
 import { appendCell, productSummary } from './tableCells';
 
 interface CalculatorData {
   ingredients: readonly IngredientChoice[];
   alternativeControls: readonly AlternativeControl[];
+  options: readonly RecipeOption[];
   servingsPerBatch: number;
   servingSingular: string;
   servingPlural: string;
@@ -21,6 +24,8 @@ const dataElement = document.getElementById('calculator-data');
 if (!dataElement?.textContent) throw new Error('Missing recipe calculator data.');
 const data = JSON.parse(dataElement.textContent) as CalculatorData;
 
+const optionRoot = document.querySelector('[data-recipe-options]');
+const optionState = optionRoot ? bindOptionControls(optionRoot, data.options, () => announce(render())) : {};
 const alternatives: Record<string, boolean> = {};
 for (const control of data.alternativeControls) alternatives[control.key] = control.defaultChecked;
 let batches = 1;
@@ -83,8 +88,9 @@ function announce(calculation: RecipeCalculation): void {
 }
 
 function render(): RecipeCalculation {
+  const ingredients = resolveIngredients(data.ingredients, data.options, optionState);
   const calculation = calculateRecipe(
-    data.ingredients,
+    ingredients,
     data.alternativeControls,
     alternatives,
     batches,

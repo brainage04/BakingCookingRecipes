@@ -3,6 +3,7 @@ import SiteLayout from '@brainage04/astro-shell/components/SiteLayout.astro';
 import StatCard from '@brainage04/astro-shell/components/StatCard.astro';
 import TerminalPanel from '@brainage04/astro-shell/components/TerminalPanel.astro';
 import { recipes } from '../data/recipes';
+import OptionControls from '../components/OptionControls.astro';
 import PriceNote from '../components/PriceNote.astro';
 
 const shoppingRecipes = recipes.map((recipe) => ({
@@ -11,6 +12,7 @@ const shoppingRecipes = recipes.map((recipe) => ({
   navTitle: recipe.navTitle,
   ingredients: recipe.ingredients,
   alternativeControls: recipe.alternativeControls,
+  options: recipe.options ?? [],
 }));
 
 const alternativeControls = Array.from(
@@ -20,7 +22,7 @@ const alternativeControls = Array.from(
 
 <SiteLayout
   title="Combined Shopping List"
-  description="Choose cookie and brownie batch counts and generate one combined Woolworths ingredient list."
+  description="Choose batch counts and options for the cookies, brownies, protein ice cream, iced coffee, butter chicken and spaghetti bolognese, and generate one combined Woolworths ingredient list."
 >
   <div class="site-stack">
     <TerminalPanel class="stack" id="shopping-list">
@@ -29,7 +31,7 @@ const alternativeControls = Array.from(
         <div class="shopping-batches" role="group" aria-label="Recipe batch counts">
           {
             shoppingRecipes.map((recipe) => (
-              <div class="control-card">
+              <div class="control-card" data-recipe-options={recipe.options.length > 0 ? recipe.slug : undefined}>
                 <label class="field" for={`batch-${recipe.slug}`}>
                   <span>{recipe.title} batches</span>
                   <input
@@ -42,6 +44,14 @@ const alternativeControls = Array.from(
                     value="1"
                   />
                 </label>
+                {recipe.options.length > 0 && (
+                  <details class="recipe-options">
+                    <summary>Options</summary>
+                    <div class="option-list">
+                      <OptionControls options={recipe.options} prefix={`shopping-${recipe.slug}`} />
+                    </div>
+                  </details>
+                )}
               </div>
             ))
           }
@@ -68,7 +78,7 @@ const alternativeControls = Array.from(
             class="stat-used-cost"
             label="Used ingredient cost"
             valueId="used-cost-output"
-            note="Proportional cost across both recipes."
+            note="Proportional cost across the selected recipes."
           />
           <StatCard
             class="stat-basket"

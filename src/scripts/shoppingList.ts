@@ -1,4 +1,5 @@
 import type { AlternativeControl } from '../data/recipes';
+import type { OptionState } from '../data/types';
 import {
   calculateShoppingList,
   formatQuantity,
@@ -7,6 +8,7 @@ import {
   type ShoppingCalculation,
   type ShoppingRecipe,
 } from '../lib/calculations';
+import { bindOptionControls } from './optionControls';
 import { appendCell, productSummary } from './tableCells';
 
 interface ShoppingData {
@@ -20,6 +22,7 @@ const data = JSON.parse(dataElement.textContent) as ShoppingData;
 
 const batchesBySlug: Record<string, number> = {};
 for (const recipe of data.recipes) batchesBySlug[recipe.slug] = 1;
+const optionStates: Record<string, OptionState> = {};
 const alternatives: Record<string, boolean> = {};
 for (const control of data.alternativeControls) alternatives[control.key] = control.defaultChecked;
 
@@ -58,7 +61,7 @@ function announce(calculation: ShoppingCalculation): void {
 }
 
 function render(): ShoppingCalculation {
-  const calculation = calculateShoppingList(data.recipes, batchesBySlug, alternatives);
+  const calculation = calculateShoppingList(data.recipes, batchesBySlug, alternatives, optionStates);
   elements.shoppingRows.replaceChildren();
 
   for (const item of calculation.rows) {
@@ -99,6 +102,13 @@ for (const toggle of elements.alternativeToggles) {
     if (key) alternatives[key] = toggle.checked;
     announce(render());
   });
+}
+
+for (const recipe of data.recipes) {
+  const options = recipe.options ?? [];
+  if (options.length === 0) continue;
+  const root = document.querySelector(`[data-recipe-options="${recipe.slug}"]`);
+  if (root) optionStates[recipe.slug] = bindOptionControls(root, options, () => announce(render()));
 }
 
 render();

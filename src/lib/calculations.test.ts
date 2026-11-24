@@ -9,6 +9,7 @@ import {
   formatQuantity,
   macrosForBatch,
   normalizeBatchInput,
+  resolveIngredients,
 } from './calculations';
 
 const standardProduct: ProductChoice = {
@@ -171,6 +172,7 @@ describe('recipe calculations', () => {
     for (const recipe of recipes) {
       expect(recipe.servingsPerBatch).toBeGreaterThan(0);
       expect(new Set(recipe.ingredients.map(({ key }) => key)).size).toBe(recipe.ingredients.length);
+      expect(resolveIngredients(recipe.ingredients, recipe.options).length).toBeGreaterThan(0);
 
       for (const ingredient of recipe.ingredients) {
         expect(ingredient.metricQuantity).toBeGreaterThanOrEqual(0);
@@ -191,7 +193,7 @@ describe('recipe calculations', () => {
       }
 
       const result = calculateRecipe(
-        recipe.ingredients,
+        resolveIngredients(recipe.ingredients, recipe.options),
         recipe.alternativeControls,
         alternatives,
         1,

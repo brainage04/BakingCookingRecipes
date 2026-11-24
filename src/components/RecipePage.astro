@@ -3,7 +3,9 @@ import SiteLayout from '@brainage04/astro-shell/components/SiteLayout.astro';
 import StatCard from '@brainage04/astro-shell/components/StatCard.astro';
 import TerminalPanel from '@brainage04/astro-shell/components/TerminalPanel.astro';
 import type { RecipePageData } from '../data/recipes';
-import { batchMassGrams } from '../lib/calculations';
+import { batchMassGrams, resolveIngredients } from '../lib/calculations';
+import { noteParts } from '../lib/noteParts';
+import OptionControls from './OptionControls.astro';
 import PriceNote from './PriceNote.astro';
 
 export interface Props {
@@ -14,6 +16,7 @@ const { recipe } = Astro.props;
 const calculatorData = {
   ingredients: recipe.ingredients,
   alternativeControls: recipe.alternativeControls,
+  options: recipe.options ?? [],
   servingsPerBatch: recipe.servingsPerBatch,
   servingSingular: recipe.servingSingular,
   servingPlural: recipe.servingPlural,
@@ -21,15 +24,27 @@ const calculatorData = {
 
 const servingPluralTitle = `${recipe.servingPlural.charAt(0).toUpperCase()}${recipe.servingPlural.slice(1)}`;
 
-const estimatedMassGrams = batchMassGrams(recipe.ingredients);
+const options = recipe.options ?? [];
+const estimatedMassGrams = batchMassGrams(resolveIngredients(recipe.ingredients, options));
+const sources = recipe.sources ?? [{ name: recipe.meta.sourceName, url: recipe.meta.sourceUrl }];
 ---
 
 <SiteLayout title={recipe.pageTitle} description={recipe.description}>
   <div class="site-stack">
-    <p class="recipe-source">Source: <a href={recipe.meta.sourceUrl}>{recipe.meta.sourceName}</a></p>
+    <p class="recipe-source">
+      Source:{' '}
+      {
+        sources.map((source, index) => (
+          <>
+            {index > 0 && ' · '}
+            {source.url ? <a href={source.url}>{source.name}</a> : source.name}
+          </>
+        ))
+      }
+    </p>
     <TerminalPanel title="Calculator" class="stack" id="calculator">
       <p id="calculator-summary" class="sr-only" role="status"></p>
-      <div class="calculator-grid">
+      <div class:list={['calculator-grid', options.length > 0 && 'calculator-grid--options']}>
         <div class="control-card batch-card">
           <label class="field" for="batch-input">
             <span>Batches</span>
@@ -46,21 +61,30 @@ const estimatedMassGrams = batchMassGrams(recipe.ingredients);
           <small id="batch-help" class="muted">Enter any unsigned decimal batch count.</small>
         </div>
 
-        <div class="control-card toggle-list" role="group" aria-label="Ingredient alternatives">
-          {
-            recipe.alternativeControls.map((control) => (
-              <label>
-                <input
-                  id={`toggle-${control.key}`}
-                  data-alternative-key={control.key}
-                  type="checkbox"
-                  checked={control.defaultChecked}
-                />
-                <span>{control.label}</span>
-              </label>
-            ))
-          }
-        </div>
+        {
+          recipe.alternativeControls.length > 0 && (
+            <div class="control-card toggle-list" role="group" aria-label="Ingredient alternatives">
+              {recipe.alternativeControls.map((control) => (
+                <label>
+                  <input
+                    id={`toggle-${control.key}`}
+                    data-alternative-key={control.key}
+                    type="checkbox"
+                    checked={control.defaultChecked}
+                  />
+                  <span>{control.label}</span>
+                </label>
+              ))}
+            </div>
+          )
+        }
+        {
+          options.length > 0 && (
+            <div class="control-card option-list" role="group" aria-label="Recipe options" data-recipe-options>
+              <OptionControls options={options} prefix="option" />
+            </div>
+          )
+        }
         <StatCard
           class="stat-cookies"
           label={servingPluralTitle}
@@ -137,11 +161,39 @@ const estimatedMassGrams = batchMassGrams(recipe.ingredients);
       </ul>
     </TerminalPanel>
 
-    <TerminalPanel title="Instructions">
-      <ol>
-        {recipe.sourceInstructions.map((step) => <li>{step}</li>)}
-      </ol>
-    </TerminalPanel>
+    {
+      recipe.sourceInstructions.length > 0 && (
+        <TerminalPanel title="Instructions">
+          <ol>
+            {recipe.sourceInstructions.map((step) => (
+              <li>{step}</li>
+            ))}
+          </ol>
+        </TerminalPanel>
+      )
+    }
+
+    {
+      recipe.notes && recipe.notes.length > 0 && (
+        <TerminalPanel title="Notes" class="recipe-notes">
+          <ul>
+            {recipe.notes.map((note) => (
+              <li>
+                {noteParts(note).map((part) =>
+                  part.href ? (
+                    <a href={part.href} target="_blank" rel="noreferrer">
+                      {part.text}
+                    </a>
+                  ) : (
+                    part.text
+                  ),
+                )}
+              </li>
+            ))}
+          </ul>
+        </TerminalPanel>
+      )
+    }
   </div>
 
   <script is:inline type="application/json" id="calculator-data" set:html={JSON.stringify(calculatorData)} />

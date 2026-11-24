@@ -1,5 +1,13 @@
 import type { AlternativeControl } from '../data/recipes';
-import type { IngredientChoice, MacroBreakdown, MetricUnit, ProductChoice, Unit } from '../data/types';
+import type {
+  IngredientChoice,
+  MacroBreakdown,
+  MetricUnit,
+  OptionState,
+  ProductChoice,
+  RecipeOption,
+  Unit,
+} from '../data/types';
 
 export type AlternativeState = Readonly<Record<string, boolean>>;
 
@@ -42,6 +50,7 @@ export interface ShoppingRecipe {
   title: string;
   ingredients: readonly IngredientChoice[];
   alternativeControls: readonly AlternativeControl[];
+  options?: readonly RecipeOption[];
 }
 
 export interface ShoppingBreakdown {
@@ -77,6 +86,39 @@ export function formatQuantity(value: number, unit: MetricUnit): string {
   const formatted = Number.isInteger(value) ? String(value) : quantityNumber.format(value);
   if (unit === 'g' || unit === 'ml') return `${formatted}${unit}`;
   return `${formatted} ${value === 1 ? unit : `${unit}s`}`;
+}
+
+export function optionDefaults(options: readonly RecipeOption[] = []): OptionState {
+  return Object.fromEntries(options.map((option) => [option.key, option.defaultValue]));
+}
+
+/**
+ * Keeps the ingredients the selected options call for and scales amount-driven rows by their option's value.
+ * A row scaled to nothing drops out, so a 0 tbsp PB2 amount leaves PB2 off the table and the shopping list.
+ */
+export function resolveIngredients(
+  ingredients: readonly IngredientChoice[],
+  options: readonly RecipeOption[] | undefined,
+  state: OptionState = optionDefaults(options),
+): IngredientChoice[] {
+  const resolved: IngredientChoice[] = [];
+  for (const ingredient of ingredients) {
+    if (ingredient.when && state[ingredient.when.option] !== ingredient.when.equals) continue;
+    if (!ingredient.perUnitOf) {
+      resolved.push(ingredient);
+      continue;
+    }
+    const amount = Number(state[ingredient.perUnitOf]);
+    const factor = Number.isFinite(amount) && amount > 0 ? amount : 0;
+    if (factor === 0) continue;
+    resolved.push({
+      ...ingredient,
+      metricQuantity: ingredient.metricQuantity * factor,
+      costQuantity: ingredient.costQuantity * factor,
+      batchGrams: ingredient.batchGrams * factor,
+    });
+  }
+  return resolved;
 }
 
 /** Products are the same purchase when these match, so their quantities share whole packs. */
@@ -201,6 +243,7 @@ export function calculateShoppingList(
   recipes: readonly ShoppingRecipe[],
   batchesBySlug: Readonly<Record<string, number>>,
   alternatives: AlternativeState,
+  optionStatesBySlug: Readonly<Record<string, OptionState>> = {},
 ): ShoppingCalculation {
   const combined = new Map<string, Omit<ShoppingRow, 'packageCount' | 'basketCost'>>();
   let usedTotal = 0;
@@ -209,7 +252,8 @@ export function calculateShoppingList(
     const batches = batchesBySlug[recipe.slug] ?? 0;
     if (batches <= 0) continue;
 
-    for (const ingredient of recipe.ingredients) {
+    const ingredients = resolveIngredients(recipe.ingredients, recipe.options, optionStatesBySlug[recipe.slug]);
+    for (const ingredient of ingredients) {
       const product = productFor(ingredient, recipe.alternativeControls, alternatives);
       const quantity = ingredient.costQuantity * batches;
       const key = productKey(product);
