@@ -91,15 +91,15 @@ export const sourceInstructions = [
   'Put the milk, stevia, PB2, thickener, protein powder and any mashed fruit in an NC701 tub and mix. Then add water up to the MAX FILL line.',
   'Freeze the tub upright and level for at least 12 hours. 16 hours or more is ideal, and past 16 hours the gains are small.',
   'Put the frozen tub in the machine and select Scoop, then Lite Ice Cream.',
-  'Re-spin only if it comes out crumbly or powdery: add 1 to 2 tbsp of milk and press Re-spin. Very cold bases often need it.',
-  'Mix-ins (optional): dig a hole down the middle, add the pieces and press Mix-In.',
+  'Re-spin only if it comes out crumbly or powdery and you are not adding mix-ins: add 1 to 2 tbsp of milk and press Re-spin. Very cold bases often need it.',
+  'Mix-ins (optional, instead of a re-spin): dig a hole down the middle, add the pieces and press Mix-In.',
 ] as const;
 
 export const sourceNotes = [
   'Freezing time: Ninja Australia says at least 24 hours (https://ninjakitchenapac.zendesk.com/hc/en-au/articles/15978391315471-NC701-Ninja-Swirl-by-CREAMi-FAQ). In practice 12 hours is the minimum, 16 hours or more is ideal, and past 16 hours the gains are small.',
   "The base is Lee Lem's Vanilla Soft Serve (300mL milk, 30g Muscle Nation vanilla ice cream whey isolate, 10g instant pudding mix) and Custard Base (300mL skim milk, 40g Muscle Nation Custard Protein, sweetener), from the first video above. Lee says the Custard Base needs no xanthan gum or pudding mix as a thickener.",
   "PB2 is an addition to Lee's recipes. 3 tbsp was too strong, so 2 tbsp is the default.",
-  'Ninja Australia says not to re-spin if you are also using the Mix-In program, so re-spin first and only then add mix-ins (same FAQ).',
+  'Ninja Australia says not to re-spin if you will also use the Mix-In program, because running both can over-process the base (same FAQ).',
   'The Lite Ice Cream program is the one Ninja names for recipes made with sugar substitutes (same FAQ).',
   'The same FAQ suggests 1 tbsp of any instant pudding mix in place of xanthan gum.',
   'Xanthan gum: 1/8 to 1/4 tsp per 16 oz (473mL) pint is the typical dose (https://scoopandchurn.com/blog/ninja-creami-stabilizers). 1/4 tsp is used here, about 0.75g.',
