@@ -109,6 +109,8 @@
 
 .calculator-grid {
   --calculator-card-min: 15rem;
+  --calculator-gap: 1.35rem;
+  --option-field-min: 22rem;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   grid-template-areas:
@@ -122,7 +124,7 @@
     'macros-serving'
     'used-cost'
     'basket';
-  gap: clamp(1rem, 2vw, 1.35rem);
+  gap: clamp(1rem, 2vw, var(--calculator-gap));
   align-items: stretch;
 }
 
@@ -141,8 +143,9 @@
 }
 
 /*
- * Container queries cannot read a custom property, so each threshold is spelled out: N columns need
- * N * --calculator-card-min plus (N - 1) gaps of the widest gap (1.35rem). Change them with the minimum.
+ * A container condition cannot read var(), so each threshold is typed out: N columns need
+ * N * --calculator-card-min plus (N - 1) * --calculator-gap, the widest the gap gets (2 * 15 + 1.35, 3 * 15 + 2 * 1.35,
+ * 4 * 15 + 3 * 1.35). Change the thresholds with those two properties.
  */
 @container calculator (min-width: 31.35rem) {
   .calculator-grid {
@@ -166,10 +169,11 @@
       'used-cost basket';
   }
 
-  /* The max-width: 640px rule below sizes stat output for one column; at this width it wraps "Protein 49.8g". */
+  /* The max-width: 640px rule below sizes every stat output for one column. In two columns at 640 px and under it
+     wraps "Protein 49.8g", so the macros outputs take their own size back. */
   .calculator-grid .stat-macros-batch output,
   .calculator-grid .stat-macros-serving output {
-    font-size: clamp(1.25rem, 2.6vw, 1.7rem);
+    font-size: var(--macros-output-size);
   }
 }
 
@@ -215,6 +219,11 @@
   grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
   gap: 1rem 1.5rem;
   align-content: start;
+}
+
+/* A card that spans the whole panel would split into two columns at 768 and 1024 px and cut the Dolmio select's label. */
+.calculator-grid .option-list {
+  grid-template-columns: repeat(auto-fit, minmax(min(var(--option-field-min), 100%), 1fr));
 }
 
 .option-field {
@@ -347,7 +356,8 @@ select:focus-visible {
 
 .stat-macros-batch output,
 .stat-macros-serving output {
-  font-size: clamp(1.25rem, 2.6vw, 1.7rem);
+  --macros-output-size: clamp(1.25rem, 2.6vw, 1.7rem);
+  font-size: var(--macros-output-size);
   line-height: 1.25;
   white-space: pre-line;
 }
