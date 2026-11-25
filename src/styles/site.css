@@ -103,22 +103,110 @@
   grid-area: auto;
 }
 
+#calculator {
+  container: calculator / inline-size;
+}
+
 .calculator-grid {
+  --calculator-card-min: 15rem;
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1fr);
   grid-template-areas:
-    'batch batch toggles toggles'
-    'cookies calories-batch macros-batch used-cost'
-    'dough calories-serving macros-serving basket';
+    'batch'
+    'toggles'
+    'cookies'
+    'dough'
+    'calories-batch'
+    'calories-serving'
+    'macros-batch'
+    'macros-serving'
+    'used-cost'
+    'basket';
   gap: clamp(1rem, 2vw, 1.35rem);
   align-items: stretch;
 }
 
 .calculator-grid--options {
   grid-template-areas:
-    'batch options options options'
-    'cookies calories-batch macros-batch used-cost'
-    'dough calories-serving macros-serving basket';
+    'batch'
+    'options'
+    'cookies'
+    'dough'
+    'calories-batch'
+    'calories-serving'
+    'macros-batch'
+    'macros-serving'
+    'used-cost'
+    'basket';
+}
+
+/*
+ * Container queries cannot read a custom property, so each threshold is spelled out: N columns need
+ * N * --calculator-card-min plus (N - 1) gaps of the widest gap (1.35rem). Change them with the minimum.
+ */
+@container calculator (min-width: 31.35rem) {
+  .calculator-grid {
+    grid-template-columns: repeat(2, minmax(var(--calculator-card-min), 1fr));
+    grid-template-areas:
+      'batch batch'
+      'toggles toggles'
+      'cookies dough'
+      'calories-batch calories-serving'
+      'macros-batch macros-serving'
+      'used-cost basket';
+  }
+
+  .calculator-grid--options {
+    grid-template-areas:
+      'batch batch'
+      'options options'
+      'cookies dough'
+      'calories-batch calories-serving'
+      'macros-batch macros-serving'
+      'used-cost basket';
+  }
+
+  /* The max-width: 640px rule below sizes stat output for one column; at this width it wraps "Protein 49.8g". */
+  .calculator-grid .stat-macros-batch output,
+  .calculator-grid .stat-macros-serving output {
+    font-size: clamp(1.25rem, 2.6vw, 1.7rem);
+  }
+}
+
+@container calculator (min-width: 47.7rem) {
+  .calculator-grid {
+    grid-template-columns: repeat(3, minmax(var(--calculator-card-min), 1fr));
+    grid-template-areas:
+      'batch toggles toggles'
+      'cookies calories-batch macros-batch'
+      'dough calories-serving macros-serving'
+      'used-cost basket basket';
+  }
+
+  .calculator-grid--options {
+    grid-template-areas:
+      'batch options options'
+      'cookies calories-batch macros-batch'
+      'dough calories-serving macros-serving'
+      'used-cost basket basket';
+  }
+}
+
+@container calculator (min-width: 64.05rem) {
+  .calculator-grid {
+    grid-template-columns: repeat(4, minmax(var(--calculator-card-min), 1fr));
+    grid-template-areas:
+      'batch batch toggles toggles'
+      'cookies calories-batch macros-batch used-cost'
+      'dough calories-serving macros-serving basket';
+  }
+
+  .calculator-grid--options {
+    grid-template-areas:
+      'batch options options options'
+      'cookies calories-batch macros-batch used-cost'
+      'dough calories-serving macros-serving basket';
+  }
 }
 
 .option-list {
@@ -348,42 +436,13 @@ ol li + li {
 }
 
 @media (max-width: 760px) {
-  .calculator-grid.calculator-grid--options {
-    grid-template-areas:
-      'batch'
-      'options'
-      'cookies'
-      'dough'
-      'calories-batch'
-      'calories-serving'
-      'macros-batch'
-      'macros-serving'
-      'used-cost'
-      'basket';
-  }
-
-  .shopping-controls,
-  .calculator-grid {
+  .shopping-controls {
     grid-template-columns: 1fr;
   }
 
   .shopping-batches,
   .shopping-summary {
     grid-template-columns: 1fr;
-  }
-
-  .calculator-grid {
-    grid-template-areas:
-      'batch'
-      'toggles'
-      'cookies'
-      'dough'
-      'calories-batch'
-      'calories-serving'
-      'macros-batch'
-      'macros-serving'
-      'used-cost'
-      'basket';
   }
 }
 
