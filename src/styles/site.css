@@ -110,7 +110,6 @@
 .calculator-grid {
   --calculator-card-min: 15rem;
   --calculator-gap: 1.35rem;
-  --option-field-min: 22rem;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   grid-template-areas:
@@ -221,9 +220,9 @@
   align-content: start;
 }
 
-/* A card that spans the whole panel would split into two columns at 768 and 1024 px and cut the Dolmio select's label. */
-.calculator-grid .option-list {
-  grid-template-columns: repeat(auto-fit, minmax(min(var(--option-field-min), 100%), 1fr));
+/* A select's labels are long; on its own row the Dolmio label stays whole wherever the card is wide enough. */
+.option-field--wide {
+  grid-column: 1 / -1;
 }
 
 .option-field {
