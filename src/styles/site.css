@@ -103,22 +103,113 @@
   grid-area: auto;
 }
 
+#calculator {
+  container: calculator / inline-size;
+}
+
 .calculator-grid {
+  --calculator-card-min: 15rem;
+  --calculator-gap: 1.35rem;
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1fr);
   grid-template-areas:
-    'batch batch toggles toggles'
-    'cookies calories-batch macros-batch used-cost'
-    'dough calories-serving macros-serving basket';
-  gap: clamp(1rem, 2vw, 1.35rem);
+    'batch'
+    'toggles'
+    'cookies'
+    'dough'
+    'calories-batch'
+    'calories-serving'
+    'macros-batch'
+    'macros-serving'
+    'used-cost'
+    'basket';
+  gap: clamp(1rem, 2vw, var(--calculator-gap));
   align-items: stretch;
 }
 
 .calculator-grid--options {
   grid-template-areas:
-    'batch options options options'
-    'cookies calories-batch macros-batch used-cost'
-    'dough calories-serving macros-serving basket';
+    'batch'
+    'options'
+    'cookies'
+    'dough'
+    'calories-batch'
+    'calories-serving'
+    'macros-batch'
+    'macros-serving'
+    'used-cost'
+    'basket';
+}
+
+/*
+ * A container condition cannot read var(), so each threshold is typed out: N columns need
+ * N * --calculator-card-min plus (N - 1) * --calculator-gap, the widest the gap gets (2 * 15 + 1.35, 3 * 15 + 2 * 1.35,
+ * 4 * 15 + 3 * 1.35). Change the thresholds with those two properties.
+ */
+@container calculator (min-width: 31.35rem) {
+  .calculator-grid {
+    grid-template-columns: repeat(2, minmax(var(--calculator-card-min), 1fr));
+    grid-template-areas:
+      'batch batch'
+      'toggles toggles'
+      'cookies dough'
+      'calories-batch calories-serving'
+      'macros-batch macros-serving'
+      'used-cost basket';
+  }
+
+  .calculator-grid--options {
+    grid-template-areas:
+      'batch batch'
+      'options options'
+      'cookies dough'
+      'calories-batch calories-serving'
+      'macros-batch macros-serving'
+      'used-cost basket';
+  }
+
+  /* The max-width: 640px rule below sizes every stat output for one column. In two columns at 640 px and under it
+     wraps "Protein 49.8g", so the macros outputs take their own size back. */
+  .calculator-grid .stat-macros-batch output,
+  .calculator-grid .stat-macros-serving output {
+    font-size: var(--macros-output-size);
+  }
+}
+
+@container calculator (min-width: 47.7rem) {
+  .calculator-grid {
+    grid-template-columns: repeat(3, minmax(var(--calculator-card-min), 1fr));
+    grid-template-areas:
+      'batch toggles toggles'
+      'cookies calories-batch macros-batch'
+      'dough calories-serving macros-serving'
+      'used-cost basket basket';
+  }
+
+  .calculator-grid--options {
+    grid-template-areas:
+      'batch options options'
+      'cookies calories-batch macros-batch'
+      'dough calories-serving macros-serving'
+      'used-cost basket basket';
+  }
+}
+
+@container calculator (min-width: 64.05rem) {
+  .calculator-grid {
+    grid-template-columns: repeat(4, minmax(var(--calculator-card-min), 1fr));
+    grid-template-areas:
+      'batch batch toggles toggles'
+      'cookies calories-batch macros-batch used-cost'
+      'dough calories-serving macros-serving basket';
+  }
+
+  .calculator-grid--options {
+    grid-template-areas:
+      'batch options options options'
+      'cookies calories-batch macros-batch used-cost'
+      'dough calories-serving macros-serving basket';
+  }
 }
 
 .option-list {
@@ -127,6 +218,11 @@
   grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
   gap: 1rem 1.5rem;
   align-content: start;
+}
+
+/* A select's labels are long; on its own row the Dolmio label stays whole wherever the card is wide enough. */
+.option-field--wide {
+  grid-column: 1 / -1;
 }
 
 .option-field {
@@ -259,7 +355,8 @@ select:focus-visible {
 
 .stat-macros-batch output,
 .stat-macros-serving output {
-  font-size: clamp(1.25rem, 2.6vw, 1.7rem);
+  --macros-output-size: clamp(1.25rem, 2.6vw, 1.7rem);
+  font-size: var(--macros-output-size);
   line-height: 1.25;
   white-space: pre-line;
 }
@@ -348,42 +445,13 @@ ol li + li {
 }
 
 @media (max-width: 760px) {
-  .calculator-grid.calculator-grid--options {
-    grid-template-areas:
-      'batch'
-      'options'
-      'cookies'
-      'dough'
-      'calories-batch'
-      'calories-serving'
-      'macros-batch'
-      'macros-serving'
-      'used-cost'
-      'basket';
-  }
-
-  .shopping-controls,
-  .calculator-grid {
+  .shopping-controls {
     grid-template-columns: 1fr;
   }
 
   .shopping-batches,
   .shopping-summary {
     grid-template-columns: 1fr;
-  }
-
-  .calculator-grid {
-    grid-template-areas:
-      'batch'
-      'toggles'
-      'cookies'
-      'dough'
-      'calories-batch'
-      'calories-serving'
-      'macros-batch'
-      'macros-serving'
-      'used-cost'
-      'basket';
   }
 }
 

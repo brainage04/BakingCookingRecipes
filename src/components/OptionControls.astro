@@ -14,7 +14,9 @@ const { options, prefix } = Astro.props;
   options.map((option) => {
     const id = `${prefix}-${option.key}`;
     return (
-      <div class="option-field">
+      <div
+        class:list={['option-field', option.kind === 'choice' && option.control === 'select' && 'option-field--wide']}
+      >
         {option.kind === 'toggle' && (
           <label class="option-check">
             <input
